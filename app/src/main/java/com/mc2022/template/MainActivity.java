@@ -1,19 +1,134 @@
 package com.mc2022.template;
-
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
+
 
 public class MainActivity extends AppCompatActivity {
 
 
     private static final String DEBUG_TAG= "Main_activity";
+    private View v;
+    private RadioButton button;
+    private RadioGroup query;
+    private Button nextb;
+    private Button clearb;
+    private Button submitb;
+    private TextView questiont;
+    private EditText namee;
+    int index=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Questions q = new Questions();
+        q.map.put("Fever",false);
+        q.map.put("Runny Nose",false);
+        q.map.put("Scratchy Throat",false);
+        q.map.put("Body Ache",false);
+        q.map.put("Headache",false);
+        nextb = findViewById(R.id.nextbutton);
+        query=findViewById(R.id.radiogroup);
+        clearb = findViewById(R.id.clearbutton);
+        submitb = findViewById(R.id.submitbutton);
+        questiont= findViewById(R.id.question);
+        namee= findViewById(R.id.name);
+        String symp = q.getsympton(index);
+        questiont.setText("Do you have "+symp+" ?");
+
+
+
+
+        clearb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                query.clearCheck();
+            }
+        });
+
+        nextb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int selectedid =query.getCheckedRadioButtonId();
+                if(selectedid==-1)
+                {
+                    Toast.makeText(getApplicationContext(), "Please select answer", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                button= findViewById(selectedid);
+                String answer= button.getText().toString();
+
+                if(answer.equals("Yes")){
+                    q.setvalue(index,true);}
+                else
+                    q.setvalue(index,false);
+                index=(index + 1) % q.map.size();
+
+                questiont.setText("Do you have "+q.getsympton(index)+" ?");
+                query.clearCheck();
+                if(index==q.map.size()-1){
+                    v = findViewById(R.id.nextbutton);
+                    v.setVisibility(View.GONE);
+                    v =findViewById(R.id.submitbutton);
+                    v.setVisibility(View.VISIBLE);}
+            }
+
+        });
+
+        submitb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(namee.getText().toString().equals("")){
+                    Toast.makeText(getApplicationContext(), "Please enter your name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int selectedid =query.getCheckedRadioButtonId();
+                if(selectedid==-1)
+                {
+                    Toast.makeText(getApplicationContext(), "Please select answer", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                button= findViewById(selectedid);
+                String answer= button.getText().toString();
+                if(answer.equals("Yes")){
+                    q.setvalue(index,true);}
+                else
+                    q.setvalue(index,false);
+                Intent intent = new Intent(getApplicationContext(),MainActivity2.class);
+                intent.putExtra("naam",namee.getText().toString());
+                intent.putExtra("sympton_name",q.selected_value());
+                intent.putExtra("result",q.istestneeded());
+                startActivity(intent);
+
+//                Go back to same activity without creating new activity and stack
+
+//                v = findViewById(R.id.nextbutton);
+//                v.setVisibility(View.VISIBLE);
+//                v =findViewById(R.id.submitbutton);
+//                v.setVisibility(View.INVISIBLE);
+//                index=0;
+//                String symp = q.getsympton(index);
+//                questiont.setText("Do you have "+symp+" ?");
+//
+//                namee.setText(null);
+//                query.clearCheck();
+
+            }
+        });
+
 
     }
 

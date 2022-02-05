@@ -20,26 +20,30 @@ public class Questions {
         }
         if (count>=3)
             return true;
-        return false;
+        else
+            return false;
     }
 
     public String getsympton(int index) {
-        return (String) map.values().toArray()[index];
+        return String.valueOf(map.keySet().toArray()[index]);
     }
 
-    public void setvalue(String val,Boolean bal){
-        map.put(val,bal);
+    public void setvalue(int index,Boolean bal){
+        map.put(getsympton(index),bal);
     }
 
     public String selected_value() {
-        StringBuilder s = null;
+        StringBuilder s = new StringBuilder();
         for (String val: map.keySet()){
-            if (map.get(val)==true)
+            if (map.get(val)==true){
                 s.append(val);
-                s.append(", ");
+                s.append(", ");}
         }
-        s.deleteCharAt(s.length()-1);
-        return String.valueOf(s);
+        if(String.valueOf(s).length()==0)
+            return "nothing";
+        else
+            s.deleteCharAt(s.length()-2);
+            return String.valueOf(s);
     }
 
 
