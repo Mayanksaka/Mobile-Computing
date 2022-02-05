@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    String PREVS="LAUNCHED";
     private static final String DEBUG_TAG= "Main_activity";
     private View v;
     private RadioButton button;
@@ -34,6 +34,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to CREATED");
+        Toast.makeText(this,"A1: "+PREVS+" -> CREATED", Toast.LENGTH_SHORT).show();
+        PREVS="CREATED";
 
         nextb = findViewById(R.id.nextbutton);
         query=findViewById(R.id.radiogroup);
@@ -138,47 +141,52 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(DEBUG_TAG, "ON_START");
-        Toast.makeText(this,"ON_START", Toast.LENGTH_SHORT).show();
+        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to STARTED");
+        Toast.makeText(this,"A1: "+PREVS+" -> STARTED", Toast.LENGTH_SHORT).show();
+        PREVS="STARTED";
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(DEBUG_TAG, "ON_PAUSE");
-        Toast.makeText(this,"ON_PAUSE", Toast.LENGTH_SHORT).show();
+        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to PAUSED");
+        Toast.makeText(this,"A1: "+PREVS+" -> PAUSED", Toast.LENGTH_SHORT).show();
+        PREVS="PAUSED";
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(DEBUG_TAG, "ON_RESUME");
-        Toast.makeText(this,"ON_RESUME", Toast.LENGTH_SHORT).show();
+        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to RESUMED");
+        Toast.makeText(this,"A1: "+PREVS+" -> RESUMED", Toast.LENGTH_SHORT).show();
+        PREVS="RESUMED";
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.d(DEBUG_TAG, "ON_RESTART");
-        Toast.makeText(this,"ON_RESTART", Toast.LENGTH_SHORT).show();
+        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to RESTARTED");
+        Toast.makeText(this,"A1: "+PREVS+" -> RESTARTED", Toast.LENGTH_SHORT).show();
+        PREVS="RESTARTED";
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.d(DEBUG_TAG, "ON_STOP");
-        Toast.makeText(this,"ON_STOP", Toast.LENGTH_SHORT).show();
+        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to STOPPED");
+        Toast.makeText(this,"A1: "+PREVS+" -> STOPPED", Toast.LENGTH_SHORT).show();
+        PREVS="STOPPED";
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(DEBUG_TAG, "ON_DESTROY");
-        Toast.makeText(this,"ON_DESTROY", Toast.LENGTH_SHORT).show();
+        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to DESTROYED");
+        Toast.makeText(this,"A1: "+PREVS+" -> DESTROYED", Toast.LENGTH_SHORT).show();
+        PREVS="DESTROYED";
     }
 
     @Override
