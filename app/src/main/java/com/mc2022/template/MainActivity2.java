@@ -27,7 +27,7 @@ public class MainActivity2 extends AppCompatActivity {
         Boolean result= intent.getBooleanExtra("result",true);
 
         wel =findViewById(R.id.welcome);
-        wel.setText("Hi "+ name+"!,");
+        wel.setText("Hi, "+ name+" !");
         selectedsymptons=findViewById(R.id.showsymptons);
         System.out.println(sympton_name);
         selectedsymptons.setText("You have selected "+sympton_name+".");

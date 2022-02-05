@@ -1,4 +1,5 @@
 package com.mc2022.template;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView questiont;
     private EditText namee;
     int index=0;
+    Questions q = new Questions();
 
 
     @Override
@@ -33,12 +35,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Questions q = new Questions();
-        q.map.put("Fever",false);
-        q.map.put("Runny Nose",false);
-        q.map.put("Scratchy Throat",false);
-        q.map.put("Body Ache",false);
-        q.map.put("Headache",false);
         nextb = findViewById(R.id.nextbutton);
         query=findViewById(R.id.radiogroup);
         clearb = findViewById(R.id.clearbutton);
@@ -55,6 +51,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                v = findViewById(R.id.nextbutton);
+                v.setVisibility(View.VISIBLE);
+                v =findViewById(R.id.submitbutton);
+                v.setVisibility(View.INVISIBLE);
+                index=0;
+                String symp = q.getsympton(index);
+                questiont.setText("Do you have "+symp+" ?");
+
+                namee.setText(null);
                 query.clearCheck();
             }
         });
@@ -130,7 +135,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
     }
+
 
     @Override
     protected void onStart() {
@@ -172,5 +179,31 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         Log.d(DEBUG_TAG, "ON_DESTROY");
         Toast.makeText(this,"ON_DESTROY", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("indexvalue",index);
+        outState.putCharSequence("naam",namee.getText());
+        outState.putInt("radiobuttonid",query.getCheckedRadioButtonId());
+        for(int i=0; i<=index;i++){
+            outState.putBoolean(String.valueOf(i),q.map.get(q.getsympton(i)));
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        index=savedInstanceState.getInt("indexvalue");
+        String symp = q.getsympton(index);
+        questiont.setText("Do you have "+symp+" ?");
+        namee.setText(savedInstanceState.getCharSequence("naam"));
+        int value= savedInstanceState.getInt("radiobuttonid");
+        if(value!=-1)
+            query.check(value);
+        for(int i=0;i<=index;i++){
+            q.map.put(q.getsympton(i),savedInstanceState.getBoolean(String.valueOf(i)));
+        }
     }
 }
