@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity2 extends AppCompatActivity {
-    private static final String DEBUG_TAG= "Main_activity_2";
+    private static final String DEBUG_TAG= "Activity_2";
     String PREVS="LAUNCHED";
     private TextView wel;
     private TextView selectedsymptons;
@@ -21,9 +21,7 @@ public class MainActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        Log.i(DEBUG_TAG , "State of activity Activity_2 changed from "+PREVS+" to CREATED");
-        Toast.makeText(this,"A2: "+PREVS+" -> CREATED", Toast.LENGTH_SHORT).show();
-        PREVS="CREATED";
+        createLogToast("CREATED");
         Intent intent = getIntent();
         String name = intent.getStringExtra("naam");
         String sympton_name= intent.getStringExtra("sympton_name");
@@ -53,50 +51,47 @@ public class MainActivity2 extends AppCompatActivity {
 
     }
 
+
+    @Override
     protected void onStart() {
         super.onStart();
-        Log.i(DEBUG_TAG , "State of activity Activity_2 changed from "+PREVS+" to STARTED");
-        Toast.makeText(this,"A2: "+PREVS+" -> STARTED", Toast.LENGTH_SHORT).show();
-        PREVS="STARTED";
+
+        createLogToast("STARTED");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(DEBUG_TAG , "State of activity Activity_2 changed from "+PREVS+" to PAUSED");
-        Toast.makeText(this,"A2: "+PREVS+" -> PAUSED", Toast.LENGTH_SHORT).show();
-        PREVS="PAUSED";
+        createLogToast("PAUSED");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(DEBUG_TAG , "State of activity Activity_2 changed from "+PREVS+" to RESUMED");
-        Toast.makeText(this,"A2: "+PREVS+" -> RESUMED", Toast.LENGTH_SHORT).show();
-        PREVS="RESUMED";
+        createLogToast("RESUMED");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.i(DEBUG_TAG , "State of activity Activity_2 changed from "+PREVS+" to RESTARTED");
-        Toast.makeText(this,"A2: "+PREVS+" -> RESTARTED", Toast.LENGTH_SHORT).show();
-        PREVS="RESTARTED";
+        createLogToast("RESTARTED");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(DEBUG_TAG , "State of activity Activity_2 changed from "+PREVS+" to STOPPED");
-        Toast.makeText(this,"A2: "+PREVS+" -> STOPPED", Toast.LENGTH_SHORT).show();
-        PREVS="STOPPED";
+        createLogToast("STOPPED");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(DEBUG_TAG , "State of activity Activity_2 changed from "+PREVS+" to DESTROYED");
-        Toast.makeText(this,"A2: "+PREVS+" -> DESTROYED", Toast.LENGTH_SHORT).show();
-        PREVS="DESTROYED";
+        createLogToast("DESTROYED");
+    }
+
+    public void createLogToast(String currentstate){
+        Log.i(DEBUG_TAG , "State of "+DEBUG_TAG+" changed from "+PREVS+" to "+currentstate);
+        Toast.makeText(this,"A2: "+PREVS+" -> "+currentstate, Toast.LENGTH_SHORT).show();
+        PREVS=currentstate;
     }
 }

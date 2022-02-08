@@ -13,11 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.util.Log;
 
+import com.mc2022.template.Controller.Controller;
+
 
 public class MainActivity extends AppCompatActivity {
 
     String PREVS="LAUNCHED";
-    private static final String DEBUG_TAG= "Main_activity";
+    private static final String DEBUG_TAG= "Activity_1";
     private View v;
     private RadioButton button;
     private RadioGroup query;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText namee;
     int index=0;
     Questions q = new Questions();
+    Controller c= new Controller();
 
 
     @Override
@@ -44,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
         submitb = findViewById(R.id.submitbutton);
         questiont= findViewById(R.id.question);
         namee= findViewById(R.id.name);
+
+
+
         String symp = q.getsympton(index);
         questiont.setText("Do you have "+symp+" ?");
 
@@ -59,8 +65,11 @@ public class MainActivity extends AppCompatActivity {
                 v =findViewById(R.id.submitbutton);
                 v.setVisibility(View.INVISIBLE);
                 index=0;
+
+
                 String symp = q.getsympton(index);
                 questiont.setText("Do you have "+symp+" ?");
+
 
                 namee.setText(null);
                 query.clearCheck();
@@ -120,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("sympton_name",q.selected_value());
                 intent.putExtra("result",q.istestneeded());
                 startActivity(intent);
+                finish();
 
 //                Go back to same activity without creating new activity and stack
 
@@ -144,51 +154,44 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to STARTED");
-        Toast.makeText(this,"A1: "+PREVS+" -> STARTED", Toast.LENGTH_SHORT).show();
-        PREVS="STARTED";
+        createLogToast("STARTED");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to PAUSED");
-        Toast.makeText(this,"A1: "+PREVS+" -> PAUSED", Toast.LENGTH_SHORT).show();
-        PREVS="PAUSED";
+        createLogToast("PAUSED");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to RESUMED");
-        Toast.makeText(this,"A1: "+PREVS+" -> RESUMED", Toast.LENGTH_SHORT).show();
-        PREVS="RESUMED";
+        createLogToast("RESUMED");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to RESTARTED");
-        Toast.makeText(this,"A1: "+PREVS+" -> RESTARTED", Toast.LENGTH_SHORT).show();
-        PREVS="RESTARTED";
+        createLogToast("RESTARTED");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to STOPPED");
-        Toast.makeText(this,"A1: "+PREVS+" -> STOPPED", Toast.LENGTH_SHORT).show();
-        PREVS="STOPPED";
+        createLogToast("STOPPED");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(DEBUG_TAG , "State of activity Activity_1 changed from "+PREVS+" to DESTROYED");
-        Toast.makeText(this,"A1: "+PREVS+" -> DESTROYED", Toast.LENGTH_SHORT).show();
-        PREVS="DESTROYED";
+        createLogToast("DESTROYED");
     }
 
+    public void createLogToast(String currentstate){
+        Log.i(DEBUG_TAG , "State of "+DEBUG_TAG+" changed from "+PREVS+" to "+currentstate);
+        Toast.makeText(this,"A1: "+PREVS+" -> "+currentstate, Toast.LENGTH_SHORT).show();
+        PREVS=currentstate;
+    }
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

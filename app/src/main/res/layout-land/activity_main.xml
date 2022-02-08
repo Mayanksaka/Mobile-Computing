@@ -44,7 +44,9 @@
                 android:hint="ex: Tony Stark"
                 android:inputType="textPersonName"
                 android:textSize="24sp"
-                tools:ignore="SpeakableTextPresentCheck" />
+                tools:ignore="SpeakableTextPresentCheck"
+                android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ "/>
+
         </LinearLayout>
 
         <LinearLayout
