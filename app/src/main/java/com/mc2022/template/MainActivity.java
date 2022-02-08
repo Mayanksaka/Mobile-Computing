@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements IselfassessmentVi
         submitb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String naam=namee.getText().toString().trim();
-                if(naam.equals("")){
+                c.setname(namee.getText().toString());
+                if(c.getname().equals("")){
                     namee.setText(null);
                     raisetoast("Please enter your name");
                     return;
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements IselfassessmentVi
                 c.selectedanswer(answer);
 
                 Intent intent = new Intent(getApplicationContext(),MainActivity2.class);
-                intent.putExtra("naam",naam);
+                intent.putExtra("naam",c.getname());
                 intent.putExtra("sympton_name",c.selected_value());
                 intent.putExtra("result",c.istestneeded());
                 finish();

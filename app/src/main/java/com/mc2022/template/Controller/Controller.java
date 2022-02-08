@@ -44,6 +44,17 @@ public class Controller implements Iselfassismentcontroller{
         return model.getquestion(index);
 
     }
+
+    @Override
+    public void setname(String name) {
+        model.setname(name);
+    }
+
+    @Override
+    public String getname() {
+        return model.getname();
+    }
+
     public String sympton(int index){
         return model.getquestion(index);
     }

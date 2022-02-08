@@ -7,4 +7,6 @@ public interface Iselfassismentcontroller {
     public void setanswer(int index, Boolean val);
     public boolean islastquestion();
     public String sympton();
+    public void setname(String name);
+    public String getname();
 }
