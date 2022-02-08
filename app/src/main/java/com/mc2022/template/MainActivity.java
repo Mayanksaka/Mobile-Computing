@@ -119,8 +119,9 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("naam",naam);
                 intent.putExtra("sympton_name",c.selected_value());
                 intent.putExtra("result",c.istestneeded());
-                startActivity(intent);
                 finish();
+                startActivity(intent);
+
             }
         });
 

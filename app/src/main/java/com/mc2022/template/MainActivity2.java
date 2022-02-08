@@ -44,8 +44,9 @@ public class MainActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(intent);
                 finish();
+                startActivity(intent);
+
             }
         });
 
