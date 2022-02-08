@@ -10,7 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity2 extends AppCompatActivity {
+import com.mc2022.template.View.IselfassessmentView;
+
+public class MainActivity2 extends AppCompatActivity implements IselfassessmentView {
     private static final String DEBUG_TAG= "Activity_2";
     String PREVS="LAUNCHED";
     private TextView wel;
@@ -30,13 +32,14 @@ public class MainActivity2 extends AppCompatActivity {
         wel =findViewById(R.id.welcome);
         wel.setText("Hi, "+ name+" !");
         selectedsymptons=findViewById(R.id.showsymptons);
-        System.out.println(sympton_name);
         selectedsymptons.setText("You have selected "+sympton_name+".");
         suggestion= findViewById(R.id.Suggestion);
-        if(result==true)
-            suggestion.setText("Go for RT-PCR test");
-        else
-            suggestion.setText("No need for RT-PCR test");
+        if(result==true){
+            raisetoast("RT-PCR test needed");
+            suggestion.setText("Go for RT-PCR test");}
+        else{
+            raisetoast("RT-PCR not needed");
+            suggestion.setText("No need for RT-PCR test");}
 
         restart=findViewById(R.id.restart);
 
@@ -94,5 +97,11 @@ public class MainActivity2 extends AppCompatActivity {
         Log.i(DEBUG_TAG , "State of "+DEBUG_TAG+" changed from "+PREVS+" to "+currentstate);
         Toast.makeText(this,"A2: "+PREVS+" -> "+currentstate, Toast.LENGTH_SHORT).show();
         PREVS=currentstate;
+    }
+
+    @Override
+    public void raisetoast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
     }
 }

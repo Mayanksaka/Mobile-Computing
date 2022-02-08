@@ -1,16 +1,11 @@
 package com.mc2022.template.Controller;
-
 import com.mc2022.template.Model.Database;
 
-import java.util.Map;
+public class Controller implements Iselfassismentcontroller{
+    private Database model = new Database();
+    private int index=-1;
 
-public class Controller {
-    Database model = new Database();
-    int index=-1;
 
-    public void setquestions(int index){
-        this.index=index;
-    }
     public int getindex(){return index;}
     public boolean islastquestion(){
         if(index== model.getdata().size()-1)
@@ -28,7 +23,6 @@ public class Controller {
         else
             return false;
     }
-
     public String selected_value() {
         StringBuilder s = new StringBuilder();
         for (Object val: model.getdata().keySet()){
@@ -42,19 +36,19 @@ public class Controller {
             s.deleteCharAt(s.length()-2);
         return String.valueOf(s);
     }
-
     public Boolean getselectedasnwer(String s){
         return (Boolean) model.getdata().get(s);
     }
-
     public String sympton(){
         index=(index + 1) % model.getdata().size();
         return model.getquestion(index);
 
     }
-
     public String sympton(int index){
         return model.getquestion(index);
+    }
+    public void setquestions(int index){
+        this.index=index;
     }
     public void selectedanswer(String answer){
         if(answer.equals("Yes"))
@@ -63,7 +57,6 @@ public class Controller {
         else
             model.setanwer(index,false);
     }
-
     public void setanswer(int index, Boolean val){
         model.setanwer(index, val);
     }

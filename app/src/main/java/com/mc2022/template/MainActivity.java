@@ -14,9 +14,11 @@ import android.widget.Toast;
 import android.util.Log;
 
 import com.mc2022.template.Controller.Controller;
+import com.mc2022.template.Controller.Iselfassismentcontroller;
+import com.mc2022.template.View.IselfassessmentView;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IselfassessmentView {
 
     String PREVS="LAUNCHED";
     private static final String DEBUG_TAG= "Activity_1";
@@ -44,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         submitb = findViewById(R.id.submitbutton);
         questiont= findViewById(R.id.question);
         namee= findViewById(R.id.name);
-
-
         questiont.setText("Do you have "+c.sympton()+" ?");
 
 
@@ -102,13 +102,13 @@ public class MainActivity extends AppCompatActivity {
                 String naam=namee.getText().toString().trim();
                 if(naam.equals("")){
                     namee.setText(null);
-                    Toast.makeText(getApplicationContext(), "Please enter your name", Toast.LENGTH_SHORT).show();
+                    raisetoast("Please enter your name");
                     return;
                 }
                 int selectedid =query.getCheckedRadioButtonId();
                 if(selectedid==-1)
                 {
-                    Toast.makeText(getApplicationContext(), "Please select answer", Toast.LENGTH_SHORT).show();
+                    raisetoast("Please select answer");
                     return;
                 }
                 button= findViewById(selectedid);
@@ -170,6 +170,12 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this,"A1: "+PREVS+" -> "+currentstate, Toast.LENGTH_SHORT).show();
         PREVS=currentstate;
     }
+
+    @Override
+    public void raisetoast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
