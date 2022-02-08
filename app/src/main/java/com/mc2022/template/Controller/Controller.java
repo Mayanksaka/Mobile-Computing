@@ -6,11 +6,20 @@ import java.util.Map;
 
 public class Controller {
     Database model = new Database();
-    Map map = model.getdata();
+    int index=-1;
 
+    public void setquestions(int index){
+        this.index=index;
+    }
+    public int getindex(){return index;}
+    public boolean islastquestion(){
+        if(index== model.getdata().size()-1)
+            return true;
+        return false;
+    }
     public boolean istestneeded() {
         int count=0;
-        for (Object sym : map.values()) {
+        for (Object sym : model.getdata().values()) {
             if ((Boolean) sym==true)
                 count++;
         }
@@ -22,8 +31,8 @@ public class Controller {
 
     public String selected_value() {
         StringBuilder s = new StringBuilder();
-        for (Object val: map.keySet()){
-            if ((Boolean)map.get(val)==true){
+        for (Object val: model.getdata().keySet()){
+            if ((Boolean)model.getdata().get(val)==true){
                 s.append(val);
                 s.append(", ");}
         }
@@ -34,12 +43,29 @@ public class Controller {
         return String.valueOf(s);
     }
 
-    public void Onnext(){
+    public Boolean getselectedasnwer(String s){
+        return (Boolean) model.getdata().get(s);
+    }
+
+    public String sympton(){
+        index=(index + 1) % model.getdata().size();
+        return model.getquestion(index);
 
     }
-    public String question(int index){
-        return "Do you have "+model.getquestion(index)+" ?";
 
+    public String sympton(int index){
+        return model.getquestion(index);
+    }
+    public void selectedanswer(String answer){
+        if(answer.equals("Yes"))
+            model.setanwer(index,true);
+
+        else
+            model.setanwer(index,false);
+    }
+
+    public void setanswer(int index, Boolean val){
+        model.setanwer(index, val);
     }
 
 }
