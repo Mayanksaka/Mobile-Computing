@@ -1,12 +1,23 @@
 package com.mc2022.template;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +25,12 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class RecentnewsFragment extends Fragment {
+    public static String TAG ="Recent_Fragment";
+    Button prev;
+    Button next;
+    int s;
+    int upper;
+    int lower;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -49,6 +66,8 @@ public class RecentnewsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate: Done");
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -59,6 +78,61 @@ public class RecentnewsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recentnews, container, false);
+        Log.i(TAG, "onCreateView: start");
+        View v =inflater.inflate(R.layout.fragment_recentnews, container, false);
+        Log.i(TAG, "onCreateView: View loaded");
+        prev = v.findViewById(R.id.button1);
+        next = v.findViewById(R.id.button2);
+        File f = new File(getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
+        Log.i(TAG, "onCreateView: File code");
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            s = Integer.valueOf(br.readLine())-1;
+            upper=s;
+            lower=s-5;
+            br.close();
+            Log.i(TAG, "onCreateView: recent_number_load");
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        top fra = new top();
+        FragmentManager fragment = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragtrans = fragment.beginTransaction();
+        fragtrans.replace(R.id.fragmentContainerView, fra).setReorderingAllowed(true).commit();
+        Log.i(TAG, "onCreateView: Fragment addedd");
+//        fra.runn(s);
+        System.out.println("Number: "+ s);
+        Log.i(TAG, "onCreateView: Fragmentdisplayed");
+
+        s--;
+        next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(lower<=s && s<=upper){
+                    System.out.println("Next: "+ s);
+                    fra.runn(s);
+                    s--;
+                }
+
+            }
+        });
+
+        prev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(lower<=s && s<=upper){
+                    System.out.println("Prev: "+ s);
+                    fra.runn(s);
+                    s++;
+                }
+            }
+        });
+
+        return v;
     }
+
+
 }

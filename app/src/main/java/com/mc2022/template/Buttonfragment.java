@@ -69,7 +69,6 @@ public class Buttonfragment extends Fragment {
 
             if(f.exists()==false){
                 newsservice.putExtra("num","0");
-
             }
             else{
                 BufferedReader br = new BufferedReader(new FileReader(f));
@@ -137,6 +136,14 @@ public class Buttonfragment extends Fragment {
                 stopbtn.setVisibility(View.GONE);
                 stopnews();}
 
+        });
+
+        recent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity().getApplicationContext(),Recentfive.class);
+                startActivity(intent);
+            }
         });
         return v;
     }

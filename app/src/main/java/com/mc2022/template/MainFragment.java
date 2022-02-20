@@ -56,7 +56,6 @@ public class MainFragment extends Fragment {
     TextView title;
     MyReceiver allBroadcastReceiver = new MyReceiver();
     IntentFilter filedownload= new IntentFilter("FILE_DOWNLOADED");
-    ErrorHandler errorBroadcast=new ErrorHandler();
 
 
     int num;
@@ -158,12 +157,11 @@ public class MainFragment extends Fragment {
 
     public void runn(int num)
         {
-            Log.i(TAG, "Broadcast Recieved");
             File file;
             try {
                 System.out.println(num);
                 String wordsline;
-                String path=getActivity().getApplicationContext().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/news"+num+".json";
+                String path=getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/news"+num+".json";
                 file = new File(path);
                 StringBuilder content = new StringBuilder();
                 BufferedReader buff = new BufferedReader(new FileReader(file));
@@ -192,8 +190,12 @@ public class MainFragment extends Fragment {
             downloadimage d = new downloadimage();
 
             d.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,imageurl);
+        }
 
-            }
+        public String gettitle(){
+            return title.getText().toString();
+        }
+
 
 
     private class downloadimage extends AsyncTask<String,Void,Void> {
@@ -232,7 +234,6 @@ public class MainFragment extends Fragment {
             title.setText(newstitle);
             body.setText(bodyy);
 //            Toast.makeText(getActivity().getApplicationContext(),"News Updated",Toast.LENGTH_SHORT);
-
         }
 
         @Override

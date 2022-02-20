@@ -56,8 +56,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-//        unregisterReceiver(allBroadcastReceiver);
-//        unregisterReceiver(errorBroadcast);
+
     }
 
     @Override
@@ -73,5 +72,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(allBroadcastReceiver);
+        unregisterReceiver(errorBroadcast);
     }
 }
