@@ -10,7 +10,7 @@ public class MessageRecieverBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
-        String errorMsg = intent.getExtras().getString("msg");
-        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
+        String Msg = intent.getExtras().getString("msg");
+        Toast.makeText(context, Msg, Toast.LENGTH_SHORT).show();
     }
 }

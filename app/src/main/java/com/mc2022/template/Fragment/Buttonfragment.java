@@ -82,8 +82,8 @@ public class Buttonfragment extends Fragment {
         }
 
 
-        ActivityManager activityManager= (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        for(ActivityManager.RunningServiceInfo service: activityManager.getRunningServices(Integer.MAX_VALUE)){
+        ActivityManager am= (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        for(ActivityManager.RunningServiceInfo service: am.getRunningServices(Integer.MAX_VALUE)){
             if(downloadservice.class.getName().equals(service.service.getClassName())){
                 startbtn.setVisibility(View.GONE);
                 stopbtn.setVisibility(View.VISIBLE);
@@ -98,11 +98,12 @@ public class Buttonfragment extends Fragment {
             public void onClick(View view) {
                 BatteryManager bm = null;
                 recent.setVisibility(View.VISIBLE);
+                IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     bm = (BatteryManager) getActivity().getSystemService(BATTERY_SERVICE);
                 }
                 int percen = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-                IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
                 Intent batteryStatus = getActivity().registerReceiver(null, filter);
                 int plugged = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
                 boolean ischarging = false;
@@ -153,8 +154,8 @@ public class Buttonfragment extends Fragment {
 
     public void startnews(){
         Boolean check=false;
-        ActivityManager activityManager= (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
-        for(ActivityManager.RunningServiceInfo service: activityManager.getRunningServices(Integer.MAX_VALUE)){
+        ActivityManager am= (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
+        for(ActivityManager.RunningServiceInfo service: am.getRunningServices(Integer.MAX_VALUE)){
             if(downloadservice.class.getName().equals(service.service.getClassName())){
                 check=true;
             }

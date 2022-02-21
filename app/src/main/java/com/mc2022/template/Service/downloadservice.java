@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
@@ -113,7 +112,6 @@ public class downloadservice extends Service {
 
         @Override
         protected String doInBackground(Integer... value) {
-//            InternetHTTP http = new InternetHTTP();
             int val = value[0];
             while(true){
                 if(!b){
@@ -167,14 +165,9 @@ public class downloadservice extends Service {
 //                    Thread.sleep(500);
                     Log.i(download_TAG, "Sleep started" );
 
-                } catch (MalformedURLException e) {
-                    Log.e("TAG", "MalformedURLException: " + e.getMessage());
-                } catch (ProtocolException e) {
-                    Log.e("TAG", "ProtocolException: " + e.getMessage());
-                } catch (IOException e) {
-                    Log.e("TAG", "IOException: " + e.getMessage());
+
                 } catch (Exception e) {
-                    Log.e("TAG", "Exception: " + e.getMessage());
+                    Log.e("Serviceclass: ", "Exception: " + e.getMessage());
                 }finally {
                     try {
                         Thread.sleep(10000);
