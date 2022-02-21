@@ -32,6 +32,7 @@ public class RecentnewsFragment extends Fragment {
     int upper;
     int lower;
 
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -81,15 +82,15 @@ public class RecentnewsFragment extends Fragment {
         Log.i(TAG, "onCreateView: start");
         View v =inflater.inflate(R.layout.fragment_recentnews, container, false);
         Log.i(TAG, "onCreateView: View loaded");
-        prev = v.findViewById(R.id.button1);
-        next = v.findViewById(R.id.button2);
+        next = v.findViewById(R.id.button1);
+        prev = v.findViewById(R.id.button2);
         File f = new File(getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
         Log.i(TAG, "onCreateView: File code");
         try {
             BufferedReader br = new BufferedReader(new FileReader(f));
             s = Integer.valueOf(br.readLine())-1;
-            upper=s;
-            lower=s-5;
+            upper=s-1;
+            lower=s-4;
             br.close();
             Log.i(TAG, "onCreateView: recent_number_load");
 
@@ -108,13 +109,20 @@ public class RecentnewsFragment extends Fragment {
         Log.i(TAG, "onCreateView: Fragmentdisplayed");
 
         s--;
+        prev.setVisibility(View.INVISIBLE);
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lower<=s && s<=upper){
+                prev.setVisibility(View.VISIBLE);
+
+                if(lower<=s){
                     System.out.println("Next: "+ s);
                     fra.runn(s);
                     s--;
+                }
+                if(lower>s){
+                    s++;
+                    next.setVisibility(View.INVISIBLE);
                 }
 
             }
@@ -123,10 +131,18 @@ public class RecentnewsFragment extends Fragment {
         prev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(lower<=s && s<=upper){
+                next.setVisibility(View.VISIBLE);
+
+                if(s<=upper){
+                    s++;
                     System.out.println("Prev: "+ s);
                     fra.runn(s);
-                    s++;
+
+
+                }
+                if(upper<s){
+                    s--;
+                    prev.setVisibility(View.INVISIBLE);
                 }
             }
         });

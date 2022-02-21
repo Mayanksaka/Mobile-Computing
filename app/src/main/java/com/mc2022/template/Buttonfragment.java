@@ -38,7 +38,7 @@ public class Buttonfragment extends Fragment {
     private Boolean isrunning=false;
     private Boolean istartable=false;
     Button startbtn, stopbtn, recent;
-    View startv,stopv;
+//    View startv,stopv;
     public static Buttonfragment instance;
     public static Buttonfragment getInstance() {
         return instance;
@@ -60,8 +60,8 @@ public class Buttonfragment extends Fragment {
         startbtn = v.findViewById(R.id.start);
         stopbtn = v.findViewById(R.id.stop);
         recent = v.findViewById(R.id.recent);
-        startv = v.findViewById(R.id.start);
-        stopv= v.findViewById(R.id.stop);
+//        startv = v.findViewById(R.id.start);
+//        stopv= v.findViewById(R.id.stop);
         File f;
         newsservice= new Intent(getContext(),downloadservice.class);
         f = new File(getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
