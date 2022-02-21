@@ -1,8 +1,9 @@
-package com.mc2022.template;
+package com.mc2022.template.Fragment;
 
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -12,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.mc2022.template.Model.Model_activity_2;
+import com.mc2022.template.R;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -99,7 +103,7 @@ public class RecentnewsFragment extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        top fra = new top();
+        Model_activity_2 fra = new Model_activity_2();
         FragmentManager fragment = getActivity().getSupportFragmentManager();
         FragmentTransaction fragtrans = fragment.beginTransaction();
         fragtrans.replace(R.id.fragmentContainerView, fra).setReorderingAllowed(true).commit();
@@ -151,4 +155,23 @@ public class RecentnewsFragment extends Fragment {
     }
 
 
+    public static class Recentfive extends AppCompatActivity {
+        public static String TAG="Activity";
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_recentfive);
+
+            FragmentManager fragment = getSupportFragmentManager();
+            FragmentTransaction fragtrans = fragment.beginTransaction();
+            fragtrans.replace(R.id.frame, new RecentnewsFragment()).setReorderingAllowed(true).commit();
+            Log.i(TAG, "onCreate: sucess");
+        }
+
+        @Override
+        protected void onDestroy() {
+            super.onDestroy();
+            Log.i("TAG", "onDestroy: Closed TopRecent");
+        }
+    }
 }

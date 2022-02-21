@@ -1,13 +1,11 @@
-package com.mc2022.template;
+package com.mc2022.template.Fragment;
 
 import static android.content.Context.BATTERY_SERVICE;
 
 import android.app.ActivityManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Bundle;
 
@@ -15,15 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.mc2022.template.R;
+import com.mc2022.template.Service.downloadservice;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -63,7 +60,7 @@ public class Buttonfragment extends Fragment {
 //        startv = v.findViewById(R.id.start);
 //        stopv= v.findViewById(R.id.stop);
         File f;
-        newsservice= new Intent(getContext(),downloadservice.class);
+        newsservice= new Intent(getContext(), downloadservice.class);
         f = new File(getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
         try {
 
@@ -141,7 +138,7 @@ public class Buttonfragment extends Fragment {
         recent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity().getApplicationContext(),Recentfive.class);
+                Intent intent = new Intent(getActivity().getApplicationContext(), RecentnewsFragment.Recentfive.class);
                 startActivity(intent);
             }
         });

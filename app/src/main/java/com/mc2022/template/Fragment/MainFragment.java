@@ -1,8 +1,6 @@
-package com.mc2022.template;
+package com.mc2022.template.Fragment;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,7 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.mc2022.template.Broadcast.MyReceiver_Broadcast;
+import com.mc2022.template.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.Instant;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,7 +53,7 @@ public class MainFragment extends Fragment {
     TextView body;
     ImageView image;
     TextView title;
-    MyReceiver allBroadcastReceiver = new MyReceiver();
+    MyReceiver_Broadcast allBroadcastReceiver = new MyReceiver_Broadcast();
     IntentFilter filedownload= new IntentFilter("FILE_DOWNLOADED");
 
 

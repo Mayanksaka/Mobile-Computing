@@ -1,4 +1,4 @@
-package com.mc2022.template;
+package com.mc2022.template.Broadcast;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

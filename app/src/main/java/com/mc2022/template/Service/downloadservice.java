@@ -1,4 +1,4 @@
-package com.mc2022.template;
+package com.mc2022.template.Service;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -16,6 +16,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+
+import com.mc2022.template.R;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -39,6 +41,7 @@ public class downloadservice extends Service {
     Boolean b =false;
     Boolean netAvailable;
     public downloadservice() {
+
     }
 
 //    @Override
@@ -67,7 +70,7 @@ public class downloadservice extends Service {
                 setContentText("Service is running")
                 .setContentTitle("News Service")
                 .setSmallIcon(R.drawable.ic_launcher_background);
-        startForeground(101, builder.build());
+        startForeground(21010, builder.build());
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -109,13 +112,11 @@ public class downloadservice extends Service {
         protected String doInBackground(Integer... value) {
 //            InternetHTTP http = new InternetHTTP();
             int val = value[0];
-            while(true) {
+            while(true){
                 if(!b){
                     break;
                 }
                 String url = "https://petwear.in/mc2022/news/news_" + String.valueOf(val) + ".json";
-//            String url = "https://api.androidhive.info/contacts/";
-//                http.servicetaskcall(url,val);
 
                 try {
 
@@ -142,7 +143,6 @@ public class downloadservice extends Service {
                     }
                     output.close();
                     reader.close();
-
                     urldata.close();
                     conn.disconnect();
                     Log.i(download_TAG, "file saved");
@@ -159,7 +159,7 @@ public class downloadservice extends Service {
                     FileOutputStream writer = new FileOutputStream(path, false);
                     writer.write(String.valueOf(val).getBytes());
                     writer.close();
-                    Thread.sleep(2000);
+                    Thread.sleep(500);
                     Log.i(download_TAG, "Sleep started" );
 
                 } catch (MalformedURLException e) {
@@ -172,7 +172,7 @@ public class downloadservice extends Service {
                     Log.e("TAG", "Exception: " + e.getMessage());
                 }finally {
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

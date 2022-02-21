@@ -24,7 +24,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:id="@+id/fragmentContainerView"
-            android:layout_height="561dp">
+            android:layout_height="175dp">
 
         </FrameLayout>
 
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Next"
-                android:textSize="20dp" />
+                android:textSize="24dp" />
 
             <Button
                 android:id="@+id/button2"
@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Prev"
-                android:textSize="20dp" />
+                android:textSize="24dp" />
         </LinearLayout>
 
     </LinearLayout>
