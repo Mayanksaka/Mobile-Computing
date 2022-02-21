@@ -155,23 +155,4 @@ public class RecentnewsFragment extends Fragment {
     }
 
 
-    public static class Recentfive extends AppCompatActivity {
-        public static String TAG="Activity";
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_recentfive);
-
-            FragmentManager fragment = getSupportFragmentManager();
-            FragmentTransaction fragtrans = fragment.beginTransaction();
-            fragtrans.replace(R.id.frame, new RecentnewsFragment()).setReorderingAllowed(true).commit();
-            Log.i(TAG, "onCreate: sucess");
-        }
-
-        @Override
-        protected void onDestroy() {
-            super.onDestroy();
-            Log.i("TAG", "onDestroy: Closed TopRecent");
-        }
-    }
 }

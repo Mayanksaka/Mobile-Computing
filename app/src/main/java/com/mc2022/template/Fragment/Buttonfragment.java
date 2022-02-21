@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.mc2022.template.R;
+import com.mc2022.template.Recentfive;
 import com.mc2022.template.Service.downloadservice;
 
 import java.io.BufferedReader;
@@ -30,7 +31,6 @@ import java.io.IOException;
 
 
 public class Buttonfragment extends Fragment {
-
 
     private Boolean isrunning=false;
     private Boolean istartable=false;
@@ -65,9 +65,11 @@ public class Buttonfragment extends Fragment {
         try {
 
             if(f.exists()==false){
+                recent.setVisibility(View.INVISIBLE);
                 newsservice.putExtra("num","0");
             }
             else{
+                recent.setVisibility(View.VISIBLE);
                 BufferedReader br = new BufferedReader(new FileReader(f));
                 String s = br.readLine();
                 newsservice.putExtra("num",s);
@@ -95,12 +97,13 @@ public class Buttonfragment extends Fragment {
             @Override
             public void onClick(View view) {
                 BatteryManager bm = null;
+                recent.setVisibility(View.VISIBLE);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     bm = (BatteryManager) getActivity().getSystemService(BATTERY_SERVICE);
                 }
                 int percen = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
-                IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-                Intent batteryStatus = getActivity().registerReceiver(null, ifilter);
+                IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+                Intent batteryStatus = getActivity().registerReceiver(null, filter);
                 int plugged = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
                 boolean ischarging = false;
                 if (plugged == BatteryManager.BATTERY_PLUGGED_AC) {
@@ -138,7 +141,7 @@ public class Buttonfragment extends Fragment {
         recent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), RecentnewsFragment.Recentfive.class);
+                Intent intent = new Intent(getActivity().getApplicationContext(), Recentfive.class);
                 startActivity(intent);
             }
         });

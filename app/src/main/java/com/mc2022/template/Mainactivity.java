@@ -1,30 +1,27 @@
 package com.mc2022.template;
 
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
+import com.mc2022.template.Broadcast.MessageRecieverBroadcast;
+import com.mc2022.template.Broadcast.MyReceiver_Broadcast;
+import com.mc2022.template.Fragment.Buttonfragment;
+import com.mc2022.template.Fragment.MainFragment;
 
-public class MainActivity extends AppCompatActivity {
-    MyReceiver allBroadcastReceiver=new MyReceiver();
-    ErrorHandler errorBroadcast=new ErrorHandler();
+public class Mainactivity extends AppCompatActivity {
+    MyReceiver_Broadcast allBroadcastReceiver=new MyReceiver_Broadcast();
+    MessageRecieverBroadcast errorBroadcast=new MessageRecieverBroadcast();
     IntentFilter lowbattery =new IntentFilter(Intent.ACTION_BATTERY_LOW);
     IntentFilter batteryokay =new IntentFilter(Intent.ACTION_BATTERY_OKAY);
     IntentFilter pconnet =new IntentFilter(Intent.ACTION_POWER_CONNECTED);
     IntentFilter pdisconnect =new IntentFilter(Intent.ACTION_POWER_DISCONNECTED);
-//    IntentFilter connectivity =new IntentFilter("INTERNET_CONNECTIVITY");
+    //    IntentFilter connectivity =new IntentFilter("INTERNET_CONNECTIVITY");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

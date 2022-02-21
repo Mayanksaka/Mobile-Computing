@@ -39,7 +39,7 @@ public class downloadservice extends Service {
     String num;
     String download_TAG="Downloadservice";
     Boolean b =false;
-    Boolean netAvailable;
+    Boolean Inetable;
     public downloadservice() {
 
     }
@@ -63,7 +63,7 @@ public class downloadservice extends Service {
         s.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,Integer.valueOf(num));
 //        return super.onStartCommand(intent,flags,startId);
 
-        NotificationChannel notificationChannel = new NotificationChannel("News Service","News Service", NotificationManager.IMPORTANCE_LOW);
+        NotificationChannel notificationChannel = new NotificationChannel("News Service","News Service", NotificationManager.IMPORTANCE_DEFAULT);
         getSystemService(NotificationManager.class).createNotificationChannel(notificationChannel);
 
         Notification.Builder builder = new Notification.Builder(this, "News Service").
@@ -90,9 +90,12 @@ public class downloadservice extends Service {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            NetworkInfo networkInfo = ((ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-            netAvailable = (networkInfo != null && networkInfo.isConnected()) ? true : false;
-            if(netAvailable){
+            NetworkInfo Info = ((ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+            if(Info != null && Info.isConnected())
+                Inetable=true;
+            else
+                Inetable=false;
+            if(Inetable){
                 Log.i(download_TAG, "Internet available");
                 sendBroadcast(new Intent("INTERNET_CONNECTIVITY").setFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES).putExtra("msg", "Internet Available"));
 
@@ -120,9 +123,12 @@ public class downloadservice extends Service {
 
                 try {
 
-                    NetworkInfo networkInfo = ((ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-                    netAvailable = networkInfo != null && networkInfo.isConnected() ? true : false;
-                    if(!netAvailable){
+                    NetworkInfo Info = ((ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+                    if(Info != null && Info.isConnected())
+                        Inetable=true;
+                    else
+                        Inetable=false;
+                    if(!Inetable){
                         sendBroadcast(new Intent("INTERNET_CONNECTIVITY").setFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES).putExtra("msg", "Internet Not Available"));
                         Log.i(download_TAG, "Internet not available");
                         throw new UnsupportedOperationException("No Connectivity");
@@ -137,8 +143,7 @@ public class downloadservice extends Service {
                     File downloadfile = new File(getApplicationContext().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/news"+val+".json");
                     OutputStream output = new FileOutputStream(downloadfile);
                     byte[] bytes = new byte[1024];
-                    int buff;
-                    while((buff = urldata.read(bytes))!=-1){
+                    while((urldata.read(bytes))!=-1){
                         output.write(bytes);
                     }
                     output.close();
@@ -159,7 +164,7 @@ public class downloadservice extends Service {
                     FileOutputStream writer = new FileOutputStream(path, false);
                     writer.write(String.valueOf(val).getBytes());
                     writer.close();
-                    Thread.sleep(500);
+//                    Thread.sleep(500);
                     Log.i(download_TAG, "Sleep started" );
 
                 } catch (MalformedURLException e) {
@@ -172,7 +177,7 @@ public class downloadservice extends Service {
                     Log.e("TAG", "Exception: " + e.getMessage());
                 }finally {
                     try {
-                        Thread.sleep(500);
+                        Thread.sleep(10000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

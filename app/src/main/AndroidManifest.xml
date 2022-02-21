@@ -4,8 +4,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"></uses-permission>
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:allowBackup="true"
@@ -15,23 +14,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApplication">
         <activity
-            android:name=".Fragment.RecentnewsFragment$Recentfive"
+            android:name=".MainActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".Recentfive"
             android:exported="false" />
 
         <receiver
-            android:name=".Broadcast.ErrorHandler"
+            android:name=".Broadcast.MessageRecieverBroadcast"
             android:enabled="true"
             android:exported="true" />
         <receiver
             android:name=".Broadcast.MyReceiver_Broadcast"
             android:enabled="true"
             android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />-->
-<!--                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />-->
-<!--                <action android:name="android.intent.action.BATTERY_LOW" />-->
-<!--                <action android:name="android.intent.action.BATTERY_OKAY" />-->
-<!--            </intent-filter>-->
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.ACTION_POWER_CONNECTED" /> -->
+            <!-- <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" /> -->
+            <!-- <action android:name="android.intent.action.BATTERY_LOW" /> -->
+            <!-- <action android:name="android.intent.action.BATTERY_OKAY" /> -->
+            <!-- </intent-filter> -->
         </receiver>
 
         <service
@@ -40,7 +43,7 @@
             android:exported="true" />
 
         <activity
-            android:name=".Model.Model_activity_2$MainActivity"
+            android:name=".Mainactivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
