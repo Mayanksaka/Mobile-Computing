@@ -59,6 +59,8 @@ public class downloadservice extends Service {
         Newsservice s =new Newsservice();
 
         num = intent.getExtras().getString("num");
+//        num = "680";
+
         s.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,Integer.valueOf(num));
 //        return super.onStartCommand(intent,flags,startId);
 
@@ -169,6 +171,7 @@ public class downloadservice extends Service {
                 } catch (Exception e) {
                     Log.e("Serviceclass: ", "Exception: " + e.getMessage());
                 }finally {
+                    Log.i("TAG", String.valueOf(val));
                     try {
                         Thread.sleep(10000);
                     } catch (InterruptedException e) {

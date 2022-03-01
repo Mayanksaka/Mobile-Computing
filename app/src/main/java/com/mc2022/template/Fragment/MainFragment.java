@@ -187,7 +187,6 @@ public class MainFragment extends Fragment {
 
 
             downloadimage d = new downloadimage();
-
             d.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,imageurl);
         }
 

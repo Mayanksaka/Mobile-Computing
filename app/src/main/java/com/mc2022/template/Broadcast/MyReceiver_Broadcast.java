@@ -53,7 +53,7 @@ public class MyReceiver_Broadcast extends BroadcastReceiver {
         }
         else
         {
-            Toast.makeText(context, "Only Gods Know", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Only God Know", Toast.LENGTH_SHORT).show();
         }
 
 
