@@ -16,12 +16,18 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.mc2022.template.News;
 import com.mc2022.template.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -58,8 +64,9 @@ public class downloadservice extends Service {
 //        Newsservice s =new Newsservice(getApplicationContext());
         Newsservice s =new Newsservice();
 
-        num = intent.getExtras().getString("num");
+//        num = intent.getExtras().getString("num");
 //        num = "680";
+        num="0";
 
         s.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,Integer.valueOf(num));
 //        return super.onStartCommand(intent,flags,startId);
@@ -150,22 +157,18 @@ public class downloadservice extends Service {
                     reader.close();
                     urldata.close();
                     conn.disconnect();
-                    Log.i(download_TAG, "file saved");
                     Intent i = new Intent();
-                    i.setAction("FILE_DOWNLOADED");
+                    i.setAction("UPDATE_RECYCLERVIEW");
+                    Log.i(download_TAG, "intentcreated ");
                     i.putExtra("num",val);
                     i.setFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES);
                     sendBroadcast(i);
                     Log.i(download_TAG, "broadcast sent to fragment" );
-
                     val++;
-
                     String path= getApplicationContext().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt";
                     FileOutputStream writer = new FileOutputStream(path, false);
                     writer.write(String.valueOf(val).getBytes());
                     writer.close();
-//                    Thread.sleep(500);
-                    Log.i(download_TAG, "Sleep started" );
 
 
                 } catch (Exception e) {
@@ -173,7 +176,7 @@ public class downloadservice extends Service {
                 }finally {
                     Log.i("TAG", String.valueOf(val));
                     try {
-                        Thread.sleep(10000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

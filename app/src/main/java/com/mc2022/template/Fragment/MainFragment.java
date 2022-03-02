@@ -15,7 +15,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.mc2022.template.Broadcast.MyReceiver_Broadcast;
@@ -33,23 +35,17 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MainFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class MainFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
     String newstitle=null;
     String bodyy=null;
     String imageurl=null;
     Bitmap bitmap=null;
+    EditText comment=null;
+    RatingBar rate;
     TextView body;
     ImageView image;
     TextView title;
@@ -73,23 +69,7 @@ public class MainFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MainFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MainFragment newInstance(String param1, String param2) {
-        MainFragment fragment = new MainFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -123,6 +103,8 @@ public class MainFragment extends Fragment {
         title = v.findViewById(R.id.title);
         body = v.findViewById(R.id.Body);
         image = v.findViewById(R.id.imageView);
+        comment = v.findViewById(R.id.comment);
+        rate =v.findViewById(R.id.rate);
 
         f = new File(getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
         try {
@@ -153,6 +135,36 @@ public class MainFragment extends Fragment {
 
     }
 
+
+
+    public int getcurrentnum(){
+        int n=0;
+        File f =new File(getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
+        try {
+
+            if(f.exists()==false){
+//                title.setText("Welcome, You have choosen one of the Best News Application");
+//                body.setText("Please click the start button to start the service. Your news will be updated every 10sec. Please make sure internet is working. you can stop news service anytime by clicking stop button.\n Creater: Jaspreet Saka \n Roll_No.: 2018237 \n Branch: CSAM");
+                n=0;
+                System.out.println("file not exist");
+            }
+            else{
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                String s = br.readLine();
+                br.close();
+                System.out.println("newsnum: "+ s);
+//                runn(Integer.valueOf(s)-1);
+                n=Integer.valueOf(s);
+                System.out.println("file exist");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return n;
+    }
 
     public void runn(int num)
         {
@@ -188,10 +200,6 @@ public class MainFragment extends Fragment {
 
             downloadimage d = new downloadimage();
             d.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,imageurl);
-        }
-
-        public String gettitle(){
-            return title.getText().toString();
         }
 
 

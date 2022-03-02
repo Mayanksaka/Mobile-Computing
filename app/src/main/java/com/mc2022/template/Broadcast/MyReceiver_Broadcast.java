@@ -7,6 +7,8 @@ import android.widget.Toast;
 
 import com.mc2022.template.Fragment.Buttonfragment;
 import com.mc2022.template.Fragment.MainFragment;
+import com.mc2022.template.Mainactivity;
+import com.mc2022.template.recyclerview_fragment;
 
 public class MyReceiver_Broadcast extends BroadcastReceiver {
 
@@ -50,6 +52,13 @@ public class MyReceiver_Broadcast extends BroadcastReceiver {
             MainFragment fra= MainFragment.getInstance();
             Integer num=intent.getExtras().getInt("num");
             fra.runn(num);
+        }
+        else if(intent.getAction().equals("UPDATE_RECYCLERVIEW"))
+        {
+            recyclerview_fragment fra= recyclerview_fragment.getInstance();
+            int t=intent.getExtras().getInt("num");
+
+            fra.doit(t);
         }
         else
         {

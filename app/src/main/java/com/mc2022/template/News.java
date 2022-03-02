@@ -1,20 +1,11 @@
 package com.mc2022.template;
 
 public class News {
-    private String id;
     private String title;
     private String body;
     private String image;
-    private String comment;
-    private int rating;
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    private String comment=null;
+    private float rating= 0.0F;
 
     public String getTitle() {
         return title;
@@ -48,7 +39,7 @@ public class News {
         this.comment = comment;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
