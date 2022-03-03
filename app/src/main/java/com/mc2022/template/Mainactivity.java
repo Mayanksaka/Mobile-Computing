@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -50,15 +49,21 @@ public class Mainactivity extends AppCompatActivity {
         registerReceiver(allBroadcastReceiver, pconnet);
         registerReceiver(allBroadcastReceiver, pdisconnect);
         registerReceiver(errorBroadcast, new IntentFilter("INTERNET_CONNECTIVITY"));
-        registerReceiver(allBroadcastReceiver,new IntentFilter("UPDATE_RECYCLERVIEW"));
+//        registerReceiver(allBroadcastReceiver,new IntentFilter("UPDATE_RECYCLERVIEW"));
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(allBroadcastReceiver);
+        unregisterReceiver(errorBroadcast);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(allBroadcastReceiver);
-        unregisterReceiver(errorBroadcast);
+
 
     }
 

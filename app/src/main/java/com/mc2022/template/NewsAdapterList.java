@@ -48,10 +48,14 @@ public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsVi
                 b.putString("image",news.getImage());
                 b.putString("comment", news.getComment());
                 b.putFloat("rating",news.getRating());
+                try{
                 AppCompatActivity activity= (AppCompatActivity) view.getContext();
                 MainFragment f = new MainFragment();
                 f.setArguments(b);
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,f).addToBackStack(null).commit();
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,f).addToBackStack(null).commit();}
+                catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
     }

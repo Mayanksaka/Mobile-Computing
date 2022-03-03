@@ -17,6 +17,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.mc2022.template.R;
+import com.mc2022.template.newsclass;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -32,9 +33,9 @@ import java.util.TimerTask;
 
 
 public class downloadservice extends Service {
-    private static Timer downloadTask ;
+    private static Timer Timetask ;
     @RequiresApi(api = Build.VERSION_CODES.O)
-
+    newsclass newsClass;
     Integer num;
     String download_TAG="Downloadservice";
     Boolean b =false;
@@ -49,8 +50,8 @@ public class downloadservice extends Service {
         super.onDestroy();
         b=false;
         Log.i(download_TAG, "onDestroy: ");
-        if (downloadTask!=null){
-            downloadTask.cancel();
+        if (Timetask!=null){
+            Timetask.cancel();
         }
 
     }
@@ -59,10 +60,12 @@ public class downloadservice extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         b=true;
+        newsClass = newsclass.getNews(getApplicationContext());
+
         num = Integer.valueOf(intent.getExtras().getString("num"));
         Log.i(TAG, "onStartCommand: "+num);
-        downloadTask = new Timer();
-        downloadTask.scheduleAtFixedRate(new DownloadTimer(), 0, 2000);
+        Timetask = new Timer();
+        Timetask.scheduleAtFixedRate(new DownTimer(), 0, 10000);
 
         NotificationChannel notificationChannel = new NotificationChannel("News Service","News Service", NotificationManager.IMPORTANCE_DEFAULT);
         getSystemService(NotificationManager.class).createNotificationChannel(notificationChannel);
@@ -82,7 +85,7 @@ public class downloadservice extends Service {
         return null;
     }
 
-    private class DownloadTimer extends TimerTask{
+    private class DownTimer extends TimerTask{
 
         @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
@@ -121,6 +124,7 @@ public class downloadservice extends Service {
             super.onPostExecute(s);
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         protected Void doInBackground(Integer... value) {
             int val = value[0];
@@ -151,6 +155,7 @@ public class downloadservice extends Service {
                 i.setFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES);
                 sendBroadcast(i);
                 Log.i(download_TAG, "broadcast sent to fragment" );
+                newsClass.loadfile(val,getApplicationContext());
                 String path= getApplicationContext().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt";
                 FileOutputStream writer = new FileOutputStream(path, false);
                 writer.write(String.valueOf(val+1).getBytes());
@@ -160,7 +165,6 @@ public class downloadservice extends Service {
                 Log.e("Serviceclass: ", "Exception: " + e.getMessage());
             }finally {
                 Log.i("Serviceclass val: ", String.valueOf(val));
-
             }
 
             return null;

@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mc2022.template.Broadcast.MyReceiver_Broadcast;
 import com.mc2022.template.News;
@@ -79,6 +80,8 @@ public class MainFragment extends Fragment {
         n.setComment(new_comment);
         n.setRating(new_rating);
         nclass.savefile(n,getActivity(),n.getId(),postiton);
+        Toast.makeText(getContext(), "Saved", Toast.LENGTH_SHORT).show();
+
         getActivity().getFragmentManager().popBackStack();
     }
 
