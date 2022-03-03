@@ -1,5 +1,6 @@
 package com.mc2022.template;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,13 +13,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.mc2022.template.Fragment.MainFragment;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsViewHolder>{
@@ -40,17 +34,18 @@ public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull NewsViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
 
         News news = NewsList.get(position);
-//        holder.news_id.setText(String.valueOf(news.getId()));
+        System.out.println("adapter running");
         holder.news_id.setText(position+".");
         holder.news_title.setText(news.getTitle());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Bundle b = new Bundle();
+                b.putString("position",String.valueOf(news.getId()));
                 b.putString("title",news.getTitle());
                 b.putString("body",news.getBody());
                 b.putString("image",news.getImage());
@@ -59,7 +54,7 @@ public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsVi
                 AppCompatActivity activity= (AppCompatActivity) view.getContext();
                 MainFragment f = new MainFragment();
                 f.setArguments(b);
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,f).commit();
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,f).addToBackStack(null).commit();
             }
         });
 

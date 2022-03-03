@@ -1,11 +1,25 @@
 package com.mc2022.template;
 
+
 public class News {
+
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    private int id;
     private String title;
     private String body;
     private String image;
     private String comment=null;
     private float rating= 0.0F;
+    private final String TAG= "News";
 
     public String getTitle() {
         return title;
@@ -43,9 +57,12 @@ public class News {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(Float rating) {
         this.rating = rating;
     }
+
+
+
 
 
 

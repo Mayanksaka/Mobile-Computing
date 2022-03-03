@@ -33,10 +33,13 @@ import java.util.ArrayList;
 public class recyclerview_fragment extends Fragment {
     ArrayList<News> newsList= new ArrayList<>();
     MyReceiver_Broadcast BroadcastReceiver=new MyReceiver_Broadcast();
-
-    RecyclerView recyclerView;
-    NewsAdapterList newsadapter;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView.Adapter adapter;
+    private newsclass newsClass;
     String download_TAG ="mainactivity";
+
+
     public static recyclerview_fragment instance;
 
     public recyclerview_fragment() {
@@ -48,13 +51,13 @@ public class recyclerview_fragment extends Fragment {
     }
 
 
-    // TODO: Rename and change types and number of parameters
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Context mContext = getActivity().getApplicationContext();
+
         instance=this;
     }
 
@@ -68,7 +71,7 @@ public class recyclerview_fragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        getActivity().unregisterReceiver(BroadcastReceiver);
+//        getActivity().unregisterReceiver(BroadcastReceiver);
     }
 
     @Override
@@ -77,60 +80,48 @@ public class recyclerview_fragment extends Fragment {
         // Inflate the layout for this fragment
         View v =inflater.inflate(R.layout.fragment_recyclerview_fragment, container, false);
         recyclerView = v.findViewById(R.id.recycler);
-        Intent newsservice= new Intent(getContext(), downloadservice.class);
-        getActivity().startService(newsservice);
-//        updatelist();
-        newsadapter = new NewsAdapterList(newsList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-        recyclerView.setAdapter(newsadapter);
-        recyclerView.setLayoutManager(linearLayoutManager);
-//        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-        System.out.println("concreate recyclerview displayed");
+
+
+        newsClass = newsclass.getNews(getContext());
+//        newsList= newsClass.loadfile(0,getContext());
+        newsList=newsClass.list;
+        layoutManager=new LinearLayoutManager(getActivity());
+        if(adapter==null){
+            adapter=new NewsAdapterList(newsList);
+        }else{
+            adapter.notifyDataSetChanged();
+        }
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(layoutManager);
+
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+//        recyclerView.setAdapter(newsadapter);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+//        recyclerView.addItemDecoration(dividerItemDecoration);
+        System.out.println("oncreate recyclerview displayed");
         return v;
     }
 
-    public void updatelist(){
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-                newsadapter.notifyDataSetChanged();
-            }
-        });
-    }
+//    public void updatelist(){
+//        getActivity().runOnUiThread(new Runnable() {
+//            public void run() {
+//                adapter.notifyDataSetChanged();
+////                adapter.notifyItemChanged(newsList.size()-1);
+//                System.out.println("adapter updated");
+//            }
+//        });
+//    }
 
     public void doit(int num){
 
+        System.out.println("news created");
+        newsList= newsClass.loadfile(num,getContext());
+        Log.i("size",""+newsList.size());
+        adapter.notifyDataSetChanged();
 
-        File file;
-        try {
-            String wordsline;
-            String path=getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/news"+num+".json";
-            file = new File(path);
-            StringBuilder content = new StringBuilder();
-            BufferedReader buff = new BufferedReader(new FileReader(file));
-            while ((wordsline = buff.readLine()) != null) {
-                content.append(wordsline);
-                content.append('\n');
-            }
-            buff.close();
-            JSONObject jsonObj = new JSONObject(content.toString());
-            Log.i(download_TAG, "file saved");
-            News n = new News();
-            n.setTitle(jsonObj.getString("title"));
-            n.setBody(jsonObj.getString("body"));
-            n.setImage(jsonObj.getString("image-url"));
-            newsList.add(n);
-            updatelist();
-
-        }
-        catch (IOException | JSONException e) {
-            //You'll need to add proper error handling here
-            Log.e("TAG", "image download fail in background: " );
-        }
-
-
-
+//        adapter.notifyItemChanged(newsList.size()-1);
+//        updatelist();
     }
 
 

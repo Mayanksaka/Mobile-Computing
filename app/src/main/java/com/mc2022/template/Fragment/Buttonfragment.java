@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.mc2022.template.R;
 import com.mc2022.template.Recentfive;
 import com.mc2022.template.Service.downloadservice;
+import com.mc2022.template.newsclass;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -37,6 +38,8 @@ public class Buttonfragment extends Fragment {
     Button startbtn, stopbtn, recent;
 //    View startv,stopv;
     public static Buttonfragment instance;
+    public newsclass nclass;
+
     public static Buttonfragment getInstance() {
         return instance;
     }
@@ -74,6 +77,10 @@ public class Buttonfragment extends Fragment {
                 String s = br.readLine();
                 newsservice.putExtra("num",s);
                 br.close();
+                nclass= newsclass.getNews(getContext());
+                for(int i=0;i<Integer.valueOf(s);i++){
+                    nclass.loadfile(i,getContext());
+                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

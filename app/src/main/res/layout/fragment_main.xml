@@ -56,6 +56,7 @@
                     android:textSize="24dp" />
 
                 <LinearLayout
+                    android:id="@+id/ratter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/comment"
@@ -63,7 +64,7 @@
 
                     <TextView
                         android:id="@+id/textView"
-                        android:layout_width="wrap_content"
+                        android:layout_width="120dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="Rating"
@@ -72,11 +73,19 @@
 
                     <RatingBar
                         android:id="@+id/rate"
-                        android:layout_width="13dp"
+                        android:layout_width="188dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp"
                         android:layout_weight="2" />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/save"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/ratter"
+                    android:text="SAVE"
+                    android:textSize="22dp" />
 
             </RelativeLayout>
         </ScrollView>

@@ -42,10 +42,8 @@ public class Mainactivity extends AppCompatActivity {
         fragtrans.replace(R.id.framelayout, new recyclerview_fragment()).setReorderingAllowed(true).commit();
         System.out.println("recycler view displayed");
 
-
-
-//        FragmentTransaction fragtrans2 = fragment.beginTransaction();
-//        fragtrans2.replace(R.id.btnframe, new Buttonfragment()).setReorderingAllowed(true).commit();
+        FragmentTransaction fragtrans2 = fragment.beginTransaction();
+        fragtrans2.replace(R.id.btnframe, new Buttonfragment()).setReorderingAllowed(true).commit();
 
 
     }
