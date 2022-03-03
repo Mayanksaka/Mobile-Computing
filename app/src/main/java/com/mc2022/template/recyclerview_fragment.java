@@ -32,13 +32,11 @@ import java.util.ArrayList;
 
 public class recyclerview_fragment extends Fragment {
     ArrayList<News> newsList= new ArrayList<>();
-    MyReceiver_Broadcast BroadcastReceiver=new MyReceiver_Broadcast();
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private RecyclerView recycler_view;
+    private RecyclerView.LayoutManager layMan;
     private RecyclerView.Adapter adapter;
     private newsclass newsClass;
-    String download_TAG ="mainactivity";
-
+    String TAG ="mainactivity";
 
     public static recyclerview_fragment instance;
 
@@ -51,78 +49,48 @@ public class recyclerview_fragment extends Fragment {
     }
 
 
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Context mContext = getActivity().getApplicationContext();
-
         instance=this;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().registerReceiver(BroadcastReceiver,new IntentFilter("UPDATE_RECYCLERVIEW"));
 
     }
 
     @Override
     public void onPause() {
         super.onPause();
-//        getActivity().unregisterReceiver(BroadcastReceiver);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v =inflater.inflate(R.layout.fragment_recyclerview_fragment, container, false);
-        recyclerView = v.findViewById(R.id.recycler);
-
-
+        recycler_view = v.findViewById(R.id.recycler);
         newsClass = newsclass.getNews(getContext());
-//        newsList= newsClass.loadfile(0,getContext());
         newsList=newsClass.list;
-        layoutManager=new LinearLayoutManager(getActivity());
         if(adapter==null){
-            adapter=new NewsAdapterList(newsList);
-        }else{
-            adapter.notifyDataSetChanged();
-        }
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(layoutManager);
-
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-//        recyclerView.setAdapter(newsadapter);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-//        recyclerView.addItemDecoration(dividerItemDecoration);
+        adapter=new NewsAdapterList(newsList);}
+        recycler_view.setAdapter(adapter);
+        layMan=new LinearLayoutManager(getActivity());
+        recycler_view.setLayoutManager(layMan);
         System.out.println("oncreate recyclerview displayed");
         return v;
     }
 
-//    public void updatelist(){
-//        getActivity().runOnUiThread(new Runnable() {
-//            public void run() {
-//                adapter.notifyDataSetChanged();
-////                adapter.notifyItemChanged(newsList.size()-1);
-//                System.out.println("adapter updated");
-//            }
-//        });
-//    }
-
     public void doit(int num){
-
         System.out.println("news created");
         newsList= newsClass.loadfile(num,getContext());
         Log.i("size",""+newsList.size());
         adapter.notifyDataSetChanged();
-
-//        adapter.notifyItemChanged(newsList.size()-1);
-//        updatelist();
     }
-
 
 }

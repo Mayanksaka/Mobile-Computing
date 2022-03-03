@@ -18,6 +18,19 @@ public class newsclass {
 
     private static newsclass news_class;
     private newsclass(Context context) {
+        String s = null;
+        File f = new File(context.getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
+        try {
+            if(f.exists()!=false){
+            BufferedReader br = new BufferedReader(new FileReader(f));
+            s = br.readLine();
+            list.clear();
+            for(int i=0;i<=Integer.valueOf(s);i++){
+                loadfile(i,context);
+            }}
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public static newsclass getNews(Context context){
@@ -30,7 +43,7 @@ public class newsclass {
 
     public ArrayList<News> list = new ArrayList<>();
 
-    public void savefile(News n, Context context, int num){
+    public void savefile(News n, Context context, int num,int positon){
         File file;
         try{
             String wordsline;
@@ -43,7 +56,7 @@ public class newsclass {
                 content.append('\n');
             }
             buff.close();
-            list.set(num,n);
+            list.set(positon,n);
             JSONObject jsonObj = new JSONObject(content.toString());
             jsonObj.put("comment",n.getComment());
             jsonObj.put("rate",n.getRating());
@@ -88,7 +101,6 @@ public class newsclass {
 
             list.add(n);
 
-//            updatelist();
         }
         catch (IOException | JSONException e) {
             Log.e("TAG", "image download fail in background: " );

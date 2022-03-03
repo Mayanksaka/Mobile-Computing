@@ -16,35 +16,30 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
-import com.mc2022.template.News;
 import com.mc2022.template.R;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class downloadservice extends Service {
+    private static Timer downloadTask ;
     @RequiresApi(api = Build.VERSION_CODES.O)
 
-    String num;
+    Integer num;
     String download_TAG="Downloadservice";
     Boolean b =false;
     Boolean Inetable;
+    String TAG="Sercice";
     public downloadservice() {
 
     }
@@ -54,6 +49,9 @@ public class downloadservice extends Service {
         super.onDestroy();
         b=false;
         Log.i(download_TAG, "onDestroy: ");
+        if (downloadTask!=null){
+            downloadTask.cancel();
+        }
 
     }
 
@@ -61,15 +59,10 @@ public class downloadservice extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         b=true;
-//        Newsservice s =new Newsservice(getApplicationContext());
-        Newsservice s =new Newsservice();
-
-//        num = intent.getExtras().getString("num");
-//        num = "680";
-        num="0";
-
-        s.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,Integer.valueOf(num));
-//        return super.onStartCommand(intent,flags,startId);
+        num = Integer.valueOf(intent.getExtras().getString("num"));
+        Log.i(TAG, "onStartCommand: "+num);
+        downloadTask = new Timer();
+        downloadTask.scheduleAtFixedRate(new DownloadTimer(), 0, 2000);
 
         NotificationChannel notificationChannel = new NotificationChannel("News Service","News Service", NotificationManager.IMPORTANCE_DEFAULT);
         getSystemService(NotificationManager.class).createNotificationChannel(notificationChannel);
@@ -89,11 +82,20 @@ public class downloadservice extends Service {
         return null;
     }
 
-    private class Newsservice extends AsyncTask<Integer , Integer, String> {
-//        Context context;
-//        public Newsservice(Context applicationContext) {
-//            context=applicationContext;
-//        }
+    private class DownloadTimer extends TimerTask{
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public void run() {
+            Newsservice s =new Newsservice();
+            s.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,Integer.valueOf(num));
+            num++;
+
+        }
+    }
+
+    private class Newsservice extends AsyncTask<Integer, Integer, Void> {
+
 
         @Override
         protected void onPreExecute() {
@@ -115,73 +117,53 @@ public class downloadservice extends Service {
         }
 
         @Override
-        protected void onPostExecute(String s) {
+        protected void onPostExecute(Void s) {
             super.onPostExecute(s);
         }
 
         @Override
-        protected String doInBackground(Integer... value) {
+        protected Void doInBackground(Integer... value) {
             int val = value[0];
-            while(true){
-                if(!b){
-                    break;
+            String url = "https://petwear.in/mc2022/news/news_" + String.valueOf(val) + ".json";
+            try {
+
+                URL url2 = new URL(url);
+                HttpURLConnection conn = (HttpURLConnection) url2.openConnection();
+                conn.setRequestMethod("GET");
+                // read the response
+
+                InputStream urldata = new BufferedInputStream(conn.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(urldata));
+                File downloadfile = new File(getApplicationContext().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/news"+val+".json");
+                OutputStream output = new FileOutputStream(downloadfile);
+                byte[] bytes = new byte[1024];
+                while((urldata.read(bytes))!=-1){
+                    output.write(bytes);
                 }
-                String url = "https://petwear.in/mc2022/news/news_" + String.valueOf(val) + ".json";
+                output.close();
+                reader.close();
+                urldata.close();
+                conn.disconnect();
+                Intent i = new Intent();
+                i.setAction("UPDATE_RECYCLERVIEW");
+                Log.i(download_TAG, "intentcreated ");
+                i.putExtra("num",val);
+                i.setFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES);
+                sendBroadcast(i);
+                Log.i(download_TAG, "broadcast sent to fragment" );
+                String path= getApplicationContext().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt";
+                FileOutputStream writer = new FileOutputStream(path, false);
+                writer.write(String.valueOf(val+1).getBytes());
+                writer.close();
 
-                try {
+            } catch (Exception e) {
+                Log.e("Serviceclass: ", "Exception: " + e.getMessage());
+            }finally {
+                Log.i("Serviceclass val: ", String.valueOf(val));
 
-                    NetworkInfo Info = ((ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-                    if(Info != null && Info.isConnected())
-                        Inetable=true;
-                    else
-                        Inetable=false;
-                    if(!Inetable){
-                        sendBroadcast(new Intent("INTERNET_CONNECTIVITY").setFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES).putExtra("msg", "Internet Not Available"));
-                        Log.i(download_TAG, "Internet not available");
-                        throw new UnsupportedOperationException("No Connectivity");
-                    }
-                    URL url2 = new URL(url);
-                    HttpURLConnection conn = (HttpURLConnection) url2.openConnection();
-                    conn.setRequestMethod("GET");
-                    // read the response
-                    InputStream urldata = new BufferedInputStream(conn.getInputStream());
+            }
 
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(urldata));
-                    File downloadfile = new File(getApplicationContext().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/news"+val+".json");
-                    OutputStream output = new FileOutputStream(downloadfile);
-                    byte[] bytes = new byte[1024];
-                    while((urldata.read(bytes))!=-1){
-                        output.write(bytes);
-                    }
-                    output.close();
-                    reader.close();
-                    urldata.close();
-                    conn.disconnect();
-                    Intent i = new Intent();
-                    i.setAction("UPDATE_RECYCLERVIEW");
-                    Log.i(download_TAG, "intentcreated ");
-                    i.putExtra("num",val);
-                    i.setFlags(Intent.FLAG_EXCLUDE_STOPPED_PACKAGES);
-                    sendBroadcast(i);
-                    Log.i(download_TAG, "broadcast sent to fragment" );
-                    val++;
-                    String path= getApplicationContext().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt";
-                    FileOutputStream writer = new FileOutputStream(path, false);
-                    writer.write(String.valueOf(val).getBytes());
-                    writer.close();
-
-
-                } catch (Exception e) {
-                    Log.e("Serviceclass: ", "Exception: " + e.getMessage());
-                }finally {
-                    Log.i("TAG", String.valueOf(val));
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }return null;
+            return null;
         }
     }
 

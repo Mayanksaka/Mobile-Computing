@@ -17,8 +17,6 @@ import java.util.ArrayList;
 
 public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsViewHolder>{
 
-    private static int count;
-
     private ArrayList<News> NewsList;
 
     public NewsAdapterList(ArrayList<News> NewsList) {
@@ -36,7 +34,6 @@ public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsVi
     @Override
     public void onBindViewHolder(@NonNull NewsViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-
         News news = NewsList.get(position);
         System.out.println("adapter running");
         holder.news_id.setText(position+".");
@@ -45,7 +42,7 @@ public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsVi
             @Override
             public void onClick(View view) {
                 Bundle b = new Bundle();
-                b.putString("position",String.valueOf(news.getId()));
+                b.putString("position",String.valueOf(position));
                 b.putString("title",news.getTitle());
                 b.putString("body",news.getBody());
                 b.putString("image",news.getImage());
@@ -57,7 +54,6 @@ public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsVi
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.framelayout,f).addToBackStack(null).commit();
             }
         });
-
     }
 
     @Override
@@ -66,17 +62,12 @@ public class NewsAdapterList extends RecyclerView.Adapter<NewsAdapterList.NewsVi
     }
 
 
-
-
-
     class NewsViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
         private TextView news_id, news_title;
-
         public NewsViewHolder(View itemView)
         {
             super(itemView);
-
             news_id = itemView.findViewById(R.id.news_num);
             news_title = itemView.findViewById(R.id.news_title);
             itemView.setOnClickListener(this);

@@ -47,12 +47,12 @@ public class MyReceiver_Broadcast extends BroadcastReceiver {
                 stop=true;
             }}
         }
-        else if(intent.getAction().equals("FILE_DOWNLOADED"))
-        {
-            MainFragment fra= MainFragment.getInstance();
-            Integer num=intent.getExtras().getInt("num");
-            fra.runn(num);
-        }
+//        else if(intent.getAction().equals("FILE_DOWNLOADED"))
+//        {
+//            MainFragment fra= MainFragment.getInstance();
+//            Integer num=intent.getExtras().getInt("num");
+//            fra.runn(num);
+//        }
         else if(intent.getAction().equals("UPDATE_RECYCLERVIEW"))
         {
             recyclerview_fragment fra= recyclerview_fragment.getInstance();

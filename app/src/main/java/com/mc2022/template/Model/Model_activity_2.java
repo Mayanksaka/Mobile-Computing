@@ -149,11 +149,6 @@ public class Model_activity_2 extends Fragment {
         d.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,imageurl);
     }
 
-    public String gettitle(){
-        return title.getText().toString();
-    }
-
-
 
     private class downlo extends AsyncTask<String,Void,Void> {
 
@@ -190,6 +185,11 @@ public class Model_activity_2 extends Fragment {
             image.setImageBitmap(bitmap);
             title.setText(newstitle);
             body.setText(bodyy);
+            try{
+
+            }catch (Exception e){
+                Log.i(TAG, "onPostExecute: No comment, No Stars yet");
+            }
 //            Toast.makeText(getActivity().getApplicationContext(),"News Updated",Toast.LENGTH_SHORT);
         }
 

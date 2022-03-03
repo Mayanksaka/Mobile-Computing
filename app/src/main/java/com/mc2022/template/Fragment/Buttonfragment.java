@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +37,8 @@ public class Buttonfragment extends Fragment {
     private Boolean isrunning=false;
     private Boolean istartable=false;
     Button startbtn, stopbtn, recent;
-//    View startv,stopv;
     public static Buttonfragment instance;
-    public newsclass nclass;
+    public String TAG="Button Fragment";
 
     public static Buttonfragment getInstance() {
         return instance;
@@ -49,19 +49,14 @@ public class Buttonfragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // Inflate the layout for this fragment
         instance=this;
         View v =inflater.inflate(R.layout.fragment_buttonfragment, container, false);
         startbtn = v.findViewById(R.id.start);
         stopbtn = v.findViewById(R.id.stop);
         recent = v.findViewById(R.id.recent);
-//        startv = v.findViewById(R.id.start);
-//        stopv= v.findViewById(R.id.stop);
         File f;
         newsservice= new Intent(getContext(), downloadservice.class);
         f = new File(getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
@@ -72,15 +67,11 @@ public class Buttonfragment extends Fragment {
                 newsservice.putExtra("num","0");
             }
             else{
-                recent.setVisibility(View.VISIBLE);
+//                recent.setVisibility(View.VISIBLE);
                 BufferedReader br = new BufferedReader(new FileReader(f));
                 String s = br.readLine();
                 newsservice.putExtra("num",s);
                 br.close();
-                nclass= newsclass.getNews(getContext());
-                for(int i=0;i<Integer.valueOf(s);i++){
-                    nclass.loadfile(i,getContext());
-                }
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -98,13 +89,11 @@ public class Buttonfragment extends Fragment {
         }
 
 
-
-
         startbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 BatteryManager bm = null;
-                recent.setVisibility(View.VISIBLE);
+//                recent.setVisibility(View.VISIBLE);
                 IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
 
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
@@ -117,7 +106,6 @@ public class Buttonfragment extends Fragment {
                 if (plugged == BatteryManager.BATTERY_PLUGGED_AC) {
                     istartable=false;
                 } else if (plugged == 0) {
-                    // on battery power
                     istartable=true;
                 }
                 if(istartable){
@@ -130,7 +118,6 @@ public class Buttonfragment extends Fragment {
                         startnews();
                     }
                 }
-
             }
         });
 
@@ -138,12 +125,11 @@ public class Buttonfragment extends Fragment {
         stopbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 isrunning=false;
                 startbtn.setVisibility(View.VISIBLE);
                 stopbtn.setVisibility(View.GONE);
-                stopnews();}
-
+                stopnews();
+            }
         });
 
         recent.setOnClickListener(new View.OnClickListener() {
@@ -168,8 +154,25 @@ public class Buttonfragment extends Fragment {
             }
         }
         if(!check){
-        Toast.makeText(getActivity().getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
-        getActivity().startService(newsservice);}
+            File f;
+            f = new File(getActivity().getDir("file", Context.MODE_PRIVATE).getAbsolutePath()+"/recentnews.txt");
+            try {
+                if(f.exists()!=false){
+                BufferedReader br = new BufferedReader(new FileReader(f));
+                String s = br.readLine();
+
+                newsservice.putExtra("num",s);
+                br.close();
+                    Log.i(TAG, "startnews: ?????????????????????");}
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Toast.makeText(getActivity().getApplicationContext(), "start", Toast.LENGTH_SHORT).show();
+            getActivity().startService(newsservice);}
 
     }
     public void stopnews(){

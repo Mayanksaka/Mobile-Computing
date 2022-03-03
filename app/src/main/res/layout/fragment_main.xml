@@ -62,30 +62,13 @@
                     android:layout_below="@+id/comment"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/textView"
-                        android:layout_width="120dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="Rating"
-                        android:textSize="24dp"
-                        android:textStyle="bold" />
-
                     <RatingBar
                         android:id="@+id/rate"
-                        android:layout_width="188dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp"
-                        android:layout_weight="2" />
+                        android:layout_weight="0" />
                 </LinearLayout>
-
-                <Button
-                    android:id="@+id/save"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/ratter"
-                    android:text="SAVE"
-                    android:textSize="22dp" />
 
             </RelativeLayout>
         </ScrollView>
