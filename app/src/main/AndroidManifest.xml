@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mc2022.template">
+    package="com.mc2022.template" >
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -12,9 +12,9 @@
         android:label="News Express"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication">
+        android:theme="@style/Theme.MyApplication" >
         <activity
-            android:name=".Recentfive"
+            android:name=".MainActivity"
             android:exported="false" />
 
         <receiver
@@ -24,7 +24,7 @@
         <receiver
             android:name=".Broadcast.MyReceiver_Broadcast"
             android:enabled="true"
-            android:exported="true">
+            android:exported="true" >
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.ACTION_POWER_CONNECTED" /> -->
@@ -38,16 +38,6 @@
             android:name=".Service.downloadservice"
             android:enabled="true"
             android:exported="true" />
-
-        <activity
-            android:name=".Mainactivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>
