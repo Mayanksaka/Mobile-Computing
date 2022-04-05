@@ -2,6 +2,7 @@ package com.mc2022.template;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -16,9 +17,10 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import com.mc2022.template.Database.SensorsDatabase;
+import com.mc2022.template.Models.Model_GPS;
 import com.mc2022.template.Models.Model_Gyroscope;
 import com.mc2022.template.Models.Model_Light;
 import com.mc2022.template.Models.Model_Linear_Accelerometer;
@@ -49,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView val_acc_x,val_acc_y,val_acc_z, status;
     private TextView val_orien_x,val_orien_y,val_orien_z;
     private TextView val_gyro_x,val_gyro_y,val_gyro_z;
-    private TextView val_gps_lati,val_gps_longi;
+    private TextView val_gps_lati,val_gps_longi,val_gps_name,val_gps_address,nearby;
+    private Button addplace,findplace;
     private TextView val_light, val_temp, val_proxi;
     private LocationManager locationManager;
     private SensorsDatabase sensorsdb;
@@ -70,6 +74,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         switch_gps = (Switch) findViewById(R.id.switch_gps);
         val_gps_lati = findViewById(R.id.value_gps_x);
         val_gps_longi = findViewById(R.id.value_gps_y);
+        val_gps_name = findViewById(R.id.gps_name);
+        val_gps_address= findViewById(R.id.gps_address);
+        addplace = findViewById(R.id.addaplace);
+        findplace = findViewById(R.id.findmyplace);
+        nearby = findViewById(R.id.nearbyplaces);
+        findplace.setEnabled(false);
+        addplace.setEnabled(false);
         switch_gps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
@@ -82,14 +93,92 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, -1, -1,MainActivity.this);
                     Toast.makeText(MainActivity.this, "GPS started", Toast.LENGTH_SHORT).show();
 
+
                 }
                 else if (!isChecked){
                     val_gps_longi.setText(null);
                     val_gps_lati.setText(null);
+                    val_gps_name.setText(null);
+                    val_gps_address.setText(null);
                     locationManager.removeUpdates(MainActivity.this);
+                    findplace.setEnabled(false);
+                    addplace.setEnabled(false);
+
                     Toast.makeText(MainActivity.this, "GPS stopped", Toast.LENGTH_SHORT).show();
 
                 }
+            }
+        });
+        addplace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(val_gps_name.getText().toString().trim()==""){
+                    Toast.makeText(MainActivity.this, "Please add name", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(val_gps_address.getText().toString().trim()==""){
+                    Toast.makeText(MainActivity.this, "Please add address", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int count=0;
+                int latestid=sensorsdb.Daogps().getlastid();
+                if(!sensorsdb.Daogps().isempty()){
+                    count=latestid;
+                    count++;
+                }
+                long time = System.currentTimeMillis();
+                sensorsdb.Daogps().insert(new Model_GPS(count,time,Double.parseDouble(val_gps_longi.getText().toString().substring(6)),Double.parseDouble(val_gps_lati.getText().toString().substring(6)),val_gps_name.getText().toString(),val_gps_address.getText().toString()));
+
+            }
+        });
+
+        findplace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                double longi=Double.parseDouble(val_gps_longi.getText().toString().substring(6));
+                double lati=Double.parseDouble(val_gps_lati.getText().toString().substring(6));
+                List<Model_GPS> list =sensorsdb.Daogps().getList();
+
+                double firstmin = Double.MAX_VALUE;
+                double secmin = Double.MAX_VALUE;
+                double thirdmin = Double.MAX_VALUE;
+                Model_GPS firstm=null;
+                Model_GPS secm=null;
+                Model_GPS thirdm=null;
+
+                for (int i = 0; i <list.size() ; i++)
+                {
+                    Model_GPS currentm= list.get(i);
+                    double distance=getdistance(currentm,longi,lati);
+
+                    if (distance < firstmin)
+                    {
+                        thirdmin = secmin;
+                        thirdm=secm;
+                        secmin = firstmin;
+                        secm=firstm;
+                        firstmin = distance;
+                        firstm= currentm;
+                    }
+
+                /* Check if current element is less than
+                secmin then update second and third */
+                    else if (distance < secmin)
+                    {
+                        thirdmin = secmin;
+                        secmin = distance;
+                        thirdm= secm;
+                        secm=currentm;
+                    }
+
+                /* Check if current element is less than
+                then update third */
+                    else if (distance < thirdmin)
+                        thirdmin = distance;
+                        thirdm=currentm;
+                }
+                nearby.setText("1. "+ firstm+"\n2. "+secm+"\n3. "+ thirdm);
+                System.out.println("1. "+ firstm+"\n\n2. "+secm+"\n\n3. "+ thirdm);
             }
         });
 
@@ -281,6 +370,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 sensorsdb.Daolight().deleteitem(latestid-9);
             }
 
+            if(sensorEvent.values[0]<20){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                chart_accleration.setBackgroundColor(Color.LTGRAY);
+                chart_proxi.setBackgroundColor(Color.LTGRAY);
+
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                chart_accleration.setBackgroundColor(Color.WHITE);
+                chart_proxi.setBackgroundColor(Color.WHITE);
+            }
+
 
 //            System.out.println(sensorsdb.Daolight().getList());
 
@@ -388,6 +488,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             LineData linedata = new LineData(dataset);
             Description desc = new Description();
             desc.setText("");
+            chart_proxi.setBackgroundColor(Color.WHITE);
             chart_proxi.setDescription(desc);
             chart_proxi.setData(linedata);
             chart_proxi.notifyDataSetChanged();
@@ -409,6 +510,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             LineData linedata = new LineData(dataset);
             Description desc = new Description();
             desc.setText("");
+            chart_accleration.setBackgroundColor(Color.WHITE);
             chart_accleration.setDescription(desc);
             chart_accleration.setData(linedata);
             chart_accleration.notifyDataSetChanged();
@@ -423,6 +525,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
+        findplace.setEnabled(true);
+        addplace.setEnabled(true);
         val_gps_longi.setText("Long: "+String.valueOf(location.getLongitude()));
         val_gps_lati.setText("Lati: "+String.valueOf(location.getLatitude()));
     }
@@ -460,5 +564,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         switch_orien.setChecked(savedInstanceState.getBoolean("orien"));
         switch_gps.setChecked(savedInstanceState.getBoolean("gps"));
 
+    }
+
+    public double getdistance(Model_GPS model, double longi, double lati){
+        double mlong= model.getLongitude();
+        double mlati= model.getLatitude();
+        double distance=Math.sqrt(Math.pow((longi-mlong),2)+Math.pow((lati-mlati),2));
+        return distance;
     }
 }

@@ -86,6 +86,6 @@ public class Model_GPS {
     }
 
     public String toString(){
-        return "num= "+ num + "time= "+ time +"longitude= "+longitude+"latitude= "+latitude+"name= "+name+"address"+address;
+        return "Name: "+name+"\nAddress: "+address+"\nLongitude: "+longitude+"\nLatitude: "+latitude;
     }
 }
