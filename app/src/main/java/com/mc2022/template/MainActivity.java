@@ -1,14 +1,329 @@
 package com.mc2022.template;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import com.mc2022.template.Database.DaoLight;
+import com.mc2022.template.Database.SensorsDatabase;
+import com.mc2022.template.Models.Model_Gyroscope;
+import com.mc2022.template.Models.Model_Light;
+import com.mc2022.template.Models.Model_Linear_Accelerometer;
+import com.mc2022.template.Models.Model_Orientation;
+import com.mc2022.template.Models.Model_Proximity;
+import com.mc2022.template.Models.Model_Temperature;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
+    private SensorManager smanager;
+    private TextView val_acc_x,val_acc_y,val_acc_z, status;
+    private TextView val_orien_x,val_orien_y,val_orien_z;
+    private TextView val_gyro_x,val_gyro_y,val_gyro_z;
+    private TextView val_gps_lati,val_gps_longi;
+    private TextView val_light, val_temp, val_proxi;
+    private LocationManager locationManager;
+    private SensorsDatabase sensorsdb;
+    private Sensor sensor_accelerometer,sensor_light,sensor_temp, sensor_gps,sensor_gyro,sensor_proxi,sensor_orien;
+    private Switch switch_acc,switch_gps,switch_light,switch_gyro,switch_proxi,switch_orien,switch_temp;
+    private String TAG= "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        smanager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensorsdb= SensorsDatabase.getInstance(getApplicationContext());
+
+        switch_gps = (Switch) findViewById(R.id.switch_gps);
+        val_gps_lati = findViewById(R.id.value_gps_x);
+        val_gps_longi = findViewById(R.id.value_gps_y);
+        switch_gps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked) {
+                    if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+                    {
+                        ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
+                    }
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, -1, -1,MainActivity.this);
+                    Toast.makeText(MainActivity.this, "GPS started", Toast.LENGTH_SHORT).show();
+
+                }
+                else if (!isChecked){
+                    val_gps_longi.setText(null);
+                    val_gps_lati.setText(null);
+                    locationManager.removeUpdates(MainActivity.this);
+                    Toast.makeText(MainActivity.this, "GPS stopped", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+        switch_light = (Switch) findViewById(R.id.switch_light);
+        val_light = findViewById(R.id.value_light);
+        switch_light.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked) {
+                    sensor_light = smanager.getDefaultSensor(Sensor.TYPE_LIGHT);
+                    if (sensor_light != null) {
+                        smanager.registerListener(MainActivity.this, sensor_light, SensorManager.SENSOR_DELAY_NORMAL);
+                        Toast.makeText(MainActivity.this, "Light started", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "Light Not Supported", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_LIGHT));
+                    val_light.setText(null);
+                    Toast.makeText(MainActivity.this, "Light stopped", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+        switch_gyro = (Switch) findViewById(R.id.switch_gyroscope);
+        val_gyro_x = findViewById(R.id.value_gyroscope_x);
+        val_gyro_y = findViewById(R.id.value_gyroscope_y);
+        val_gyro_z = findViewById(R.id.value_gyroscope_z);
+        switch_gyro.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked) {
+                    sensor_gyro = smanager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+                    if (sensor_gyro != null) {
+
+                        smanager.registerListener(MainActivity.this, sensor_gyro, SensorManager.SENSOR_DELAY_NORMAL);
+                        Toast.makeText(MainActivity.this, "Gyroscope started", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "Gyroscope Not supported", Toast.LENGTH_SHORT).show();
+
+                    }
+                } else {
+                    smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
+                    val_gyro_x.setText(null);
+                    val_gyro_y.setText(null);
+                    val_gyro_z.setText(null);
+                    Toast.makeText(MainActivity.this, "Gyroscope stopped", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+        switch_proxi = (Switch) findViewById(R.id.switch_proximity);
+        val_proxi = findViewById(R.id.value_proximity);
+        switch_proxi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked) {
+                    sensor_proxi = smanager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+                    if (sensor_proxi != null) {
+
+                        smanager.registerListener(MainActivity.this, sensor_proxi, SensorManager.SENSOR_DELAY_NORMAL);
+                        Toast.makeText(MainActivity.this, "Proximity started", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+
+                        Toast.makeText(MainActivity.this, "Proximity Not supported", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_PROXIMITY));
+                    val_proxi.setText(null);
+                    Toast.makeText(MainActivity.this, "Proximity stopped", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+        switch_orien = (Switch) findViewById(R.id.switch_orientation);
+        val_orien_x = findViewById(R.id.value_orientation_x);
+        val_orien_y = findViewById(R.id.value_orientation_y);
+        val_orien_z = findViewById(R.id.value_orientation_z);
+        switch_orien.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked) {
+                    sensor_orien = smanager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+                    if (sensor_orien != null) {
+
+                        smanager.registerListener(MainActivity.this, sensor_orien, SensorManager.SENSOR_DELAY_NORMAL);
+                        Toast.makeText(MainActivity.this, "Orientation started", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(MainActivity.this, "Orientation Not supported", Toast.LENGTH_SHORT).show();
+
+                        Log.i(TAG,"Orientation Not supported");
+                    }
+                } else {
+                    smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_ORIENTATION));
+                    val_orien_x.setText(null);
+                    val_orien_y.setText(null);
+                    val_orien_z.setText(null);
+                    Toast.makeText(MainActivity.this, "Orientation stopped", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        switch_temp = (Switch) findViewById(R.id.switch_temperature);
+        val_temp = findViewById(R.id.value_temperature);
+        switch_temp.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked) {
+                    sensor_temp = smanager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
+                    if (sensor_temp != null) {
+
+                        smanager.registerListener(MainActivity.this, sensor_temp, SensorManager.SENSOR_DELAY_NORMAL);
+                        Toast.makeText(MainActivity.this, "Temperature started", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+
+                        Toast.makeText(MainActivity.this, "Temperature Not supported", Toast.LENGTH_SHORT).show();
+                        Log.i(TAG,"Temperature Not supported");
+                        switch_temp.setChecked(false);
+                    }
+                } else {
+                    smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_TEMPERATURE));
+                    val_temp.setText(null);
+                    Toast.makeText(MainActivity.this, "Temperature stopped", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        switch_acc = (Switch) findViewById(R.id.switch_accelerometer);
+        val_acc_x = findViewById(R.id.value_accelerometer_x);
+        val_acc_y = findViewById(R.id.value_accelerometer_y);
+        val_acc_z = findViewById(R.id.value_accelerometer_z);
+        status = findViewById(R.id.status_accelerometer_movement);
+        switch_acc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked) {
+                    sensor_accelerometer = smanager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+                    if (sensor_accelerometer != null) {
+
+                        smanager.registerListener(MainActivity.this, sensor_accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                        Toast.makeText(MainActivity.this, "Accelerometer sensor started", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+
+                        Toast.makeText(MainActivity.this, "Accelerometer Not supported", Toast.LENGTH_SHORT).show();
+
+                        Log.i(TAG,"Accelerometer Not supported");
+                    }
+                } else {
+                    smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
+                    val_acc_x.setText(null);
+                    val_acc_y.setText(null);
+                    val_acc_z.setText(null);
+                    Toast.makeText(MainActivity.this, "Accelerometer stopped", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        Sensor sevent = sensorEvent.sensor;
+        if(sevent.getType() == Sensor.TYPE_LIGHT){
+            int count=0;
+            if(!sensorsdb.Daolight().isempty()){
+                count=sensorsdb.Daolight().getlastid();
+                count++;
+            }
+            long time = System.currentTimeMillis();
+            sensorsdb.Daolight().insert(new Model_Light(count,time,sensorEvent.values[0]));
+            val_light.setText("Lux: "+ Float.toString(sensorEvent.values[0]));
+//            System.out.println(sensorsdb.Daolight().getList());
+
+        }
+        else if (sevent.getType() == Sensor.TYPE_GYROSCOPE){
+            int count=0;
+            if(!sensorsdb.Daogyro().isempty()){
+                count=sensorsdb.Daogyro().getlastid();
+                count++;
+            }
+            long time = System.currentTimeMillis();
+            sensorsdb.Daogyro().insert(new Model_Gyroscope(count,time,sensorEvent.values[0],sensorEvent.values[1],sensorEvent.values[2]));
+            val_gyro_x.setText("X: "+ Float.toString(sensorEvent.values[0]));
+            val_gyro_y.setText("Y: "+ Float.toString(sensorEvent.values[1]));
+            val_gyro_z.setText("Z: "+ Float.toString(sensorEvent.values[2]));
+        }
+        else if(sevent.getType() == Sensor.TYPE_PROXIMITY){
+            int count=0;
+            if(!sensorsdb.Daoproxi().isempty()){
+                count=sensorsdb.Daoproxi().getlastid();
+                count++;
+            }
+            long time = System.currentTimeMillis();
+            sensorsdb.Daoproxi().insert(new Model_Proximity(count,time,sensorEvent.values[0]));
+            val_proxi.setText("Distance: "+ Float.toString(sensorEvent.values[0]));
+        }
+        else if (sevent.getType() == Sensor.TYPE_ORIENTATION){
+            int count=0;
+            if(!sensorsdb.Daoorien().isempty()){
+                count=sensorsdb.Daoorien().getlastid();
+                count++;
+            }
+            long time = System.currentTimeMillis();
+            sensorsdb.Daoorien().insert(new Model_Orientation(count,time,sensorEvent.values[0],sensorEvent.values[1],sensorEvent.values[2]));
+            val_orien_x.setText("A: "+ Float.toString(sensorEvent.values[0]));
+            val_orien_y.setText("P: "+ Float.toString(sensorEvent.values[1]));
+            val_orien_z.setText("R: "+ Float.toString(sensorEvent.values[2]));
+        }
+        else if(sevent.getType() == Sensor.TYPE_TEMPERATURE){
+            int count=0;
+            if(!sensorsdb.Daotemp().isempty()){
+                count=sensorsdb.Daotemp().getlastid();
+                count++;
+            }
+            long time = System.currentTimeMillis();
+            sensorsdb.Daotemp().insert(new Model_Temperature(count,time,sensorEvent.values[0]));
+            val_temp.setText("Temp: "+ Float.toString(sensorEvent.values[0]));
+        }
+        else if (sevent.getType() == Sensor.TYPE_LINEAR_ACCELERATION){
+            int count=0;
+            if(!sensorsdb.Daoacc().isempty()){
+                count=sensorsdb.Daoacc().getlastid();
+                count++;
+            }
+            long time = System.currentTimeMillis();
+            sensorsdb.Daoacc().insert(new Model_Linear_Accelerometer(count,time,sensorEvent.values[0],sensorEvent.values[1],sensorEvent.values[2]));
+            val_acc_x.setText("X: "+ Float.toString(sensorEvent.values[0]));
+            val_acc_y.setText("Y: "+ Float.toString(sensorEvent.values[1]));
+            val_acc_z.setText("Z: "+ Float.toString(sensorEvent.values[2]));
+            status.setText(String.valueOf(sensorEvent.values[0]*sensorEvent.values[1]*sensorEvent.values[2]));
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+    }
+
+    @Override
+    public void onLocationChanged(@NonNull Location location) {
+        val_gps_longi.setText("Long: "+String.valueOf(location.getLongitude()));
+        val_gps_lati.setText("Lati: "+String.valueOf((location.getLatitude())));
+    }
+
 }
