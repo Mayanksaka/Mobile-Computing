@@ -15,9 +15,9 @@ public class Model_Proximity {
     private long time;
     @ColumnInfo(name = "pvalue")
     @NonNull
-    private double pvalue;
+    private float pvalue;
 
-    public Model_Proximity(int num, long time, double pvalue) {
+    public Model_Proximity(int num, long time, float pvalue) {
         this.num = num;
         this.time = time;
         this.pvalue = pvalue;
@@ -39,11 +39,11 @@ public class Model_Proximity {
         this.time = time;
     }
 
-    public double getPvalue() {
+    public float getPvalue() {
         return pvalue;
     }
 
-    public void setPvalue(double pvalue) {
+    public void setPvalue(float pvalue) {
         this.pvalue = pvalue;
     }
 

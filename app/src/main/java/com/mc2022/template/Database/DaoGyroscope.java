@@ -17,8 +17,8 @@ public interface DaoGyroscope {
     boolean isempty();
     @Query("SELECT MAX(num)  FROM gyroscope_model")
     int getlastid();
-    @Query(("Delete from gyroscope_model where :colname = :itemname"))
-    void deleteitem(String colname, String itemname);
+    @Query(("Delete from gyroscope_model where num = :itemname"))
+    void deleteitem(int itemname);
 
     @Query("Select * from gyroscope_model")
     List<Model_Gyroscope> getList();

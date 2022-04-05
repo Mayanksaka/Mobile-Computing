@@ -18,8 +18,8 @@ public interface DaoProximity {
     @Query("SELECT MAX(num)  FROM proximity_model")
     int getlastid();
 
-    @Query("Delete from proximity_model where :colname = :itemname")
-    void deleteitem(String colname, String itemname);
+    @Query(("Delete from proximity_model where num = :itemname"))
+    void deleteitem(int itemname);
 
     @Query("Select * from proximity_model")
     List<Model_Proximity> getList();

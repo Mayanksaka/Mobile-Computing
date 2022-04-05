@@ -17,8 +17,8 @@ public interface DaoLinearAcceleration {
     boolean isempty();
     @Query("SELECT MAX(num)  FROM accelerometer_Model")
     int getlastid();
-    @Query(("Delete from accelerometer_Model where :colname = :itemname"))
-    void deleteitem(String colname, String itemname);
+    @Query(("Delete from accelerometer_Model where num = :itemname"))
+    void deleteitem(int itemname);
 
     @Query("Select * from accelerometer_Model")
     List<Model_Linear_Accelerometer> getList();

@@ -17,8 +17,8 @@ public interface DaoLight {
     boolean isempty();
     @Query("SELECT MAX(num)  FROM light_model")
     int getlastid();
-    @Query(("Delete from light_model where :colname = :itemname"))
-    void deleteitem(String colname, String itemname);
+    @Query(("Delete from light_model where num = :itemname"))
+    void deleteitem(int itemname);
 
     @Query("Select * from light_model")
     List<Model_Light> getList();

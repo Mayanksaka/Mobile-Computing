@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -15,6 +16,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.UrlQuerySanitizer;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.CompoundButton;
@@ -22,7 +24,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mc2022.template.Database.DaoLight;
+import com.github.mikephil.charting.charts.LineChart;
+
+import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+
 import com.mc2022.template.Database.SensorsDatabase;
 import com.mc2022.template.Models.Model_Gyroscope;
 import com.mc2022.template.Models.Model_Light;
@@ -30,6 +40,9 @@ import com.mc2022.template.Models.Model_Linear_Accelerometer;
 import com.mc2022.template.Models.Model_Orientation;
 import com.mc2022.template.Models.Model_Proximity;
 import com.mc2022.template.Models.Model_Temperature;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
     private SensorManager smanager;
@@ -43,11 +56,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Sensor sensor_accelerometer,sensor_light,sensor_temp, sensor_gps,sensor_gyro,sensor_proxi,sensor_orien;
     private Switch switch_acc,switch_gps,switch_light,switch_gyro,switch_proxi,switch_orien,switch_temp;
     private String TAG= "MainActivity";
+    private LineChart chart_proxi, chart_accleration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         smanager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorsdb= SensorsDatabase.getInstance(getApplicationContext());
@@ -132,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         switch_proxi = (Switch) findViewById(R.id.switch_proximity);
         val_proxi = findViewById(R.id.value_proximity);
+        chart_proxi =findViewById(R.id.chart_proximity);
+        chart_proxi.setDragEnabled(true);
+        chart_proxi.setScaleEnabled(false);
         switch_proxi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
@@ -143,7 +161,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         Toast.makeText(MainActivity.this, "Proximity started", Toast.LENGTH_SHORT).show();
                     }
                     else{
-
                         Toast.makeText(MainActivity.this, "Proximity Not supported", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -190,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                 if (isChecked) {
-                    sensor_temp = smanager.getDefaultSensor(Sensor.TYPE_TEMPERATURE);
+                    sensor_temp = smanager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
                     if (sensor_temp != null) {
 
                         smanager.registerListener(MainActivity.this, sensor_temp, SensorManager.SENSOR_DELAY_NORMAL);
@@ -203,7 +220,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         switch_temp.setChecked(false);
                     }
                 } else {
-                    smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_TEMPERATURE));
+                    smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE));
                     val_temp.setText(null);
                     Toast.makeText(MainActivity.this, "Temperature stopped", Toast.LENGTH_SHORT).show();
                 }
@@ -215,6 +232,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         val_acc_y = findViewById(R.id.value_accelerometer_y);
         val_acc_z = findViewById(R.id.value_accelerometer_z);
         status = findViewById(R.id.status_accelerometer_movement);
+        chart_accleration= findViewById(R.id.chart_accelerometer);
+        chart_accleration.setDragEnabled(true);
+        chart_accleration.setScaleEnabled(false);
         switch_acc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
@@ -240,6 +260,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
             }
         });
+        creategraph("proxy");
+        creategraph("acc");
     }
 
     @Override
@@ -247,20 +269,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Sensor sevent = sensorEvent.sensor;
         if(sevent.getType() == Sensor.TYPE_LIGHT){
             int count=0;
+            int latestid=sensorsdb.Daolight().getlastid();
             if(!sensorsdb.Daolight().isempty()){
-                count=sensorsdb.Daolight().getlastid();
+                count=latestid;
                 count++;
             }
             long time = System.currentTimeMillis();
             sensorsdb.Daolight().insert(new Model_Light(count,time,sensorEvent.values[0]));
             val_light.setText("Lux: "+ Float.toString(sensorEvent.values[0]));
+            if(latestid>9){
+                sensorsdb.Daolight().deleteitem(latestid-9);
+            }
+
+
 //            System.out.println(sensorsdb.Daolight().getList());
 
         }
         else if (sevent.getType() == Sensor.TYPE_GYROSCOPE){
             int count=0;
+            int latestid=sensorsdb.Daogyro().getlastid();
             if(!sensorsdb.Daogyro().isempty()){
-                count=sensorsdb.Daogyro().getlastid();
+                count=latestid;
                 count++;
             }
             long time = System.currentTimeMillis();
@@ -268,21 +297,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             val_gyro_x.setText("X: "+ Float.toString(sensorEvent.values[0]));
             val_gyro_y.setText("Y: "+ Float.toString(sensorEvent.values[1]));
             val_gyro_z.setText("Z: "+ Float.toString(sensorEvent.values[2]));
+
+            if(latestid>9){
+                sensorsdb.Daogyro().deleteitem(latestid-9);
+            }
+
         }
         else if(sevent.getType() == Sensor.TYPE_PROXIMITY){
             int count=0;
+            int latestid=sensorsdb.Daoproxi().getlastid();
             if(!sensorsdb.Daoproxi().isempty()){
-                count=sensorsdb.Daoproxi().getlastid();
+                count=latestid;
                 count++;
             }
             long time = System.currentTimeMillis();
             sensorsdb.Daoproxi().insert(new Model_Proximity(count,time,sensorEvent.values[0]));
             val_proxi.setText("Distance: "+ Float.toString(sensorEvent.values[0]));
+            if(latestid>9){
+                sensorsdb.Daoproxi().deleteitem(latestid-9);
+            }
+
+            creategraph("proxy");
+
         }
         else if (sevent.getType() == Sensor.TYPE_ORIENTATION){
             int count=0;
+            int latestid=sensorsdb.Daoorien().getlastid();
             if(!sensorsdb.Daoorien().isempty()){
-                count=sensorsdb.Daoorien().getlastid();
+                count=latestid;
                 count++;
             }
             long time = System.currentTimeMillis();
@@ -290,21 +332,30 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             val_orien_x.setText("A: "+ Float.toString(sensorEvent.values[0]));
             val_orien_y.setText("P: "+ Float.toString(sensorEvent.values[1]));
             val_orien_z.setText("R: "+ Float.toString(sensorEvent.values[2]));
+            if(latestid>9){
+                sensorsdb.Daoorien().deleteitem(latestid-9);
+            }
         }
-        else if(sevent.getType() == Sensor.TYPE_TEMPERATURE){
+        else if(sevent.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
             int count=0;
+            int latestid=sensorsdb.Daotemp().getlastid();
             if(!sensorsdb.Daotemp().isempty()){
-                count=sensorsdb.Daotemp().getlastid();
+                count=latestid;
                 count++;
             }
             long time = System.currentTimeMillis();
             sensorsdb.Daotemp().insert(new Model_Temperature(count,time,sensorEvent.values[0]));
             val_temp.setText("Temp: "+ Float.toString(sensorEvent.values[0]));
+
+            if(latestid>9){
+                sensorsdb.Daotemp().deleteitem(latestid-9);
+            }
         }
         else if (sevent.getType() == Sensor.TYPE_LINEAR_ACCELERATION){
             int count=0;
+            int latestid=sensorsdb.Daoacc().getlastid();
             if(!sensorsdb.Daoacc().isempty()){
-                count=sensorsdb.Daoacc().getlastid();
+                count=latestid;
                 count++;
             }
             long time = System.currentTimeMillis();
@@ -313,8 +364,58 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             val_acc_y.setText("Y: "+ Float.toString(sensorEvent.values[1]));
             val_acc_z.setText("Z: "+ Float.toString(sensorEvent.values[2]));
             status.setText(String.valueOf(sensorEvent.values[0]*sensorEvent.values[1]*sensorEvent.values[2]));
+            if(latestid>9){
+                sensorsdb.Daoacc().deleteitem(latestid-9);
+            }
+            creategraph("acc");
+
         }
     }
+
+    private void creategraph(String name) {
+        ArrayList<Entry> data = new ArrayList<>();
+
+        if(name.equals("proxy")){
+            int cc=1;
+            for( Model_Proximity item : sensorsdb.Daoproxi().getList()){
+                data.add(new Entry(cc,item.getPvalue()));
+                cc++;
+            }
+            LineDataSet lineset = new LineDataSet(data,"Proximity Value");
+            lineset.setColor(Color.RED);
+            ArrayList<ILineDataSet> dataset= new ArrayList<>();
+            dataset.add(lineset);
+            LineData linedata = new LineData(dataset);
+            Description desc = new Description();
+            desc.setText("");
+            chart_proxi.setDescription(desc);
+            chart_proxi.setData(linedata);
+            chart_proxi.notifyDataSetChanged();
+            chart_proxi.invalidate();
+        }
+        else{
+            int cc=1;
+            for( Model_Linear_Accelerometer item : sensorsdb.Daoacc().getList()){
+                double value= (item.getX_axis()+ item.getY_axis()+ item.getZ_axis())/3;
+                Double Dval = Double.valueOf(value);
+                Float fval = Dval.floatValue();
+                data.add(new Entry(cc,fval));
+                cc++;
+            }
+            LineDataSet lineset = new LineDataSet(data,"Average Value of Linear Accelerometer");
+            lineset.setColor(Color.RED);
+            ArrayList<ILineDataSet> dataset= new ArrayList<>();
+            dataset.add(lineset);
+            LineData linedata = new LineData(dataset);
+            Description desc = new Description();
+            desc.setText("");
+            chart_accleration.setDescription(desc);
+            chart_accleration.setData(linedata);
+            chart_accleration.notifyDataSetChanged();
+            chart_accleration.invalidate();
+        }
+    }
+
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
@@ -323,7 +424,41 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onLocationChanged(@NonNull Location location) {
         val_gps_longi.setText("Long: "+String.valueOf(location.getLongitude()));
-        val_gps_lati.setText("Lati: "+String.valueOf((location.getLatitude())));
+        val_gps_lati.setText("Lati: "+String.valueOf(location.getLatitude()));
     }
 
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("gyro",switch_gyro.isChecked());
+        outState.putBoolean("acc",switch_acc.isChecked());
+        outState.putBoolean("temp",switch_temp.isChecked());
+        outState.putBoolean("light",switch_light.isChecked());
+        outState.putBoolean("proxi",switch_proxi.isChecked());
+        outState.putBoolean("orien",switch_orien.isChecked());
+        outState.putBoolean("gps",switch_gps.isChecked());
+
+        switch_gyro.setChecked(false);
+        switch_acc.setChecked(false);
+        switch_temp.setChecked(false);
+        switch_light.setChecked(false);
+        switch_proxi.setChecked(false);
+        switch_orien.setChecked(false);
+        switch_gps.setChecked(false);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        switch_gyro.setChecked(savedInstanceState.getBoolean("gyro"));
+        switch_acc.setChecked(savedInstanceState.getBoolean("acc"));
+        switch_temp.setChecked(savedInstanceState.getBoolean("temp"));
+        switch_light.setChecked(savedInstanceState.getBoolean("light"));
+        switch_proxi.setChecked(savedInstanceState.getBoolean("proxi"));
+        switch_orien.setChecked(savedInstanceState.getBoolean("orien"));
+        switch_gps.setChecked(savedInstanceState.getBoolean("gps"));
+
+    }
 }

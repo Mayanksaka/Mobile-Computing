@@ -99,6 +99,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Accelerometer"
+                    app:layout_constraintVertical_bias="0.05"
                     android:layout_marginLeft="10dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -115,6 +116,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias=".95"
+                    app:layout_constraintVertical_bias="0.05"
 
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
@@ -126,6 +128,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="X: 0.0"
+                    app:layout_constraintVertical_bias="0.05"
 
                     android:padding="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -139,6 +142,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    app:layout_constraintVertical_bias="0.05"
+
                     app:layout_constraintEnd_toStartOf="@+id/switch_accelerometer"
                     app:layout_constraintStart_toEndOf="@id/name_accelerometer"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -155,6 +160,8 @@
                     android:layout_height="wrap_content"
                     android:hint="Y: 0.0"
                     android:padding="5dp"
+                    app:layout_constraintVertical_bias="0.05"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/value_accelerometer_z"
                     app:layout_constraintHorizontal_bias=".5"
@@ -162,19 +169,35 @@
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/value_accelerometer_x"
                     app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
-                    app:layout_constraintVertical_bias="0.0" />
+                     />
 
                 <TextView
                     android:id="@+id/value_accelerometer_z"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintVertical_bias="0.05"
+
                     app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     android:padding="5dp"
                     android:hint="Z: 0.0"
                     app:layout_constraintHorizontal_bias=".95"/>
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chart_accelerometer"
+
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintWidth_percent=".95"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/value_accelerometer_x"
+                    android:padding="2dp"
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -291,6 +314,8 @@
 
                 <TextView
                     android:id="@+id/name_proximity"
+                    app:layout_constraintVertical_bias="0.05"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Proximity"
@@ -308,6 +333,8 @@
                     android:id="@+id/switch_proximity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:layout_constraintVertical_bias="0.05"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias=".95"
                     app:layout_constraintLeft_toRightOf="@+id/name_proximity"
@@ -319,6 +346,8 @@
                     android:id="@+id/value_proximity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    app:layout_constraintVertical_bias="0.05"
+
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/name_proximity"
@@ -326,6 +355,19 @@
                     app:layout_constraintHorizontal_bias=".05"
                     android:padding="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/chart_proximity"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="5dp"
+                    app:layout_constraintWidth_percent=".95"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/value_proximity"
+                    android:padding="2dp"
+                    />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

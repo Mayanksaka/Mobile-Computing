@@ -18,8 +18,8 @@ public interface DaoTempera {
     @Query("SELECT MAX(num)  FROM temperature_model")
     int getlastid();
 
-    @Query(("Delete from temperature_model where :colname = :itemname"))
-    void deleteitem(String colname, String itemname);
+    @Query(("Delete from temperature_model where num = :itemname"))
+    void deleteitem(int itemname);
 
     @Query("Select * from temperature_model")
     List<Model_Temperature> getList();

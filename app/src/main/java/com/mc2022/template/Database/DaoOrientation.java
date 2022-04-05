@@ -19,8 +19,8 @@ public interface DaoOrientation {
     @Query("SELECT MAX(num)  FROM orientation_model")
     int getlastid();
 
-    @Query(("Delete from orientation_model where :colname = :itemname"))
-    void deleteitem(String colname, String itemname);
+    @Query(("Delete from orientation_model where num = :itemname"))
+    void deleteitem(int itemname);
 
     @Query("Select * from orientation_model")
     List<Model_Orientation> getList();
