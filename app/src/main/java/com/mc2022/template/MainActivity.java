@@ -426,8 +426,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(size>9){
                 System.out.println(list.get(9).getTime()-list.get(5).getTime());
 
-            if(list.get(9).getTime()-list.get(5).getTime()<5000){
-                if(activatedproxy==false && list.get(9).getTime()-lastwave>10000){
+            if(list.get(9).getTime()-list.get(6).getTime()<10000){
+                if(activatedproxy==false && list.get(9).getTime()-lastwave>15000){
                     switch_gyro.setChecked(false);
                     switch_acc.setChecked(false);
                     switch_temp.setChecked(false);
