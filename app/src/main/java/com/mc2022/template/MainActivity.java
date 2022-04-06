@@ -700,4 +700,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         double distance=Math.sqrt(Math.pow((longi-mlong),2)+Math.pow((lati-mlati),2));
         return distance;
     }
+
+
 }
+
+
+// references: tutorial, class lectuers, MPCart:  https://medium.com/@shehanatuk/how-to-use-mpandroidchart-in-android-studio-c01a8150720f also https://www.youtube.com/watch?v=N-_X6G1KgAY
+//
