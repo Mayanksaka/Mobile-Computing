@@ -414,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 count=latestid;
                 count++;
             }
+
             long time = System.currentTimeMillis();
             sensorsdb.Daoproxi().insert(new Model_Proximity(count,time,sensorEvent.values[0]));
             val_proxi.setText("Distance: "+ Float.toString(sensorEvent.values[0]));
@@ -478,6 +479,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             double a = sensorEvent.values[0];
             double p = sensorEvent.values[1];
             double r = sensorEvent.values[2];
+
+            if(activatedorien==false) {
+                if (a > 1.4 && a < 1.7 ) {
+                    switch_gyro.setChecked(false);
+                    switch_acc.setChecked(false);
+                    switch_temp.setChecked(false);
+                    switch_light.setChecked(false);
+                    switch_proxi.setChecked(false);
+                    switch_gps.setChecked(false);
+                    activatedorien = true;
+                    lastwave = System.currentTimeMillis();
+                    System.out.println("Sensors_stopped");
+                    Toast.makeText(MainActivity.this, "Phone Flipped", Toast.LENGTH_SHORT).show();
+                }
+            }
+            if(activatedorien==true){
+                if( a >-1.7 && a<-1.4 ){
+                    switch_gyro.setChecked(true);
+                    switch_acc.setChecked(true);
+                    switch_temp.setChecked(true);
+                    switch_light.setChecked(true);
+                    switch_proxi.setChecked(true);
+                    switch_gps.setChecked(true);
+                    activatedorien=false;
+                    lastwave= System.currentTimeMillis();
+                    System.out.println("Sensors_start");
+                    Toast.makeText(MainActivity.this, "Phone Unflipped", Toast.LENGTH_SHORT).show();
+
+
+                }
+            }
         }
         else if(sevent.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
             int count=0;
@@ -523,8 +555,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 status.setTextColor(Color.GREEN);
 
             }
-            creategraph("acc");
 
+            creategraph("acc");
 
         }
     }
