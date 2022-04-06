@@ -22,6 +22,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,7 +46,13 @@ import com.mc2022.template.Models.Model_Proximity;
 import com.mc2022.template.Models.Model_Temperature;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener, LocationListener {
     private SensorManager smanager;
@@ -61,13 +68,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Switch switch_acc,switch_gps,switch_light,switch_gyro,switch_proxi,switch_orien,switch_temp;
     private String TAG= "MainActivity";
     private LineChart chart_proxi, chart_accleration;
+    private Boolean activatedproxy=false, activatedorien=false;
+    private long lastwave=0;
+    private ScrollView scroller;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        scroller= findViewById(R.id.scrollview);
         smanager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorsdb= SensorsDatabase.getInstance(getApplicationContext());
 
@@ -88,12 +98,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
                     {
                         ActivityCompat.requestPermissions(MainActivity.this,new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION},1);
+                        switch_gps.setChecked(false);
+                        return;
                     }
                     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, -1, -1,MainActivity.this);
                     Toast.makeText(MainActivity.this, "GPS started", Toast.LENGTH_SHORT).show();
-
-
                 }
                 else if (!isChecked){
                     val_gps_longi.setText(null);
@@ -112,14 +122,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         addplace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(val_gps_name.getText().toString().trim()==""){
+                if(val_gps_name.getText().toString().trim().matches("")){
                     Toast.makeText(MainActivity.this, "Please add name", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(val_gps_address.getText().toString().trim()==""){
+                else if(val_gps_address.getText().toString().trim().matches("")){
                     Toast.makeText(MainActivity.this, "Please add address", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                else{
                 int count=0;
                 int latestid=sensorsdb.Daogps().getlastid();
                 if(!sensorsdb.Daogps().isempty()){
@@ -128,6 +139,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 }
                 long time = System.currentTimeMillis();
                 sensorsdb.Daogps().insert(new Model_GPS(count,time,Double.parseDouble(val_gps_longi.getText().toString().substring(6)),Double.parseDouble(val_gps_lati.getText().toString().substring(6)),val_gps_name.getText().toString(),val_gps_address.getText().toString()));
+                val_gps_name.setText(null);
+                val_gps_address.setText(null);
+                Toast.makeText(MainActivity.this, "Place Added", Toast.LENGTH_SHORT).show();}
 
             }
         });
@@ -135,50 +149,35 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         findplace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                double longi=Double.parseDouble(val_gps_longi.getText().toString().substring(6));
-                double lati=Double.parseDouble(val_gps_lati.getText().toString().substring(6));
-                List<Model_GPS> list =sensorsdb.Daogps().getList();
-
-                double firstmin = Double.MAX_VALUE;
-                double secmin = Double.MAX_VALUE;
-                double thirdmin = Double.MAX_VALUE;
-                Model_GPS firstm=null;
-                Model_GPS secm=null;
-                Model_GPS thirdm=null;
-
-                for (int i = 0; i <list.size() ; i++)
-                {
-                    Model_GPS currentm= list.get(i);
-                    double distance=getdistance(currentm,longi,lati);
-
-                    if (distance < firstmin)
-                    {
-                        thirdmin = secmin;
-                        thirdm=secm;
-                        secmin = firstmin;
-                        secm=firstm;
-                        firstmin = distance;
-                        firstm= currentm;
+                double longi = Double.parseDouble(val_gps_longi.getText().toString().substring(6));
+                double lati = Double.parseDouble(val_gps_lati.getText().toString().substring(6));
+                List<Model_GPS> list = sensorsdb.Daogps().getList();
+                int sizee = list.size();
+                if (sizee > 0) {
+                    Map<Double, Model_GPS> distancemodel = new HashMap<>();
+                    ArrayList<Double> keyvalues = new ArrayList<>();
+                    for (Model_GPS item : list) {
+                        double dis = getdistance(item, longi, lati);
+                        distancemodel.put(dis, item);
+                        keyvalues.add(dis);
                     }
+                    Collections.sort(keyvalues);
 
-                /* Check if current element is less than
-                secmin then update second and third */
-                    else if (distance < secmin)
-                    {
-                        thirdmin = secmin;
-                        secmin = distance;
-                        thirdm= secm;
-                        secm=currentm;
+                    if (sizee < 3) {
+                        if (sizee == 2) {
+                            nearby.setText("1. " + distancemodel.get(keyvalues.get(0)) + "\n\n2. " + distancemodel.get(keyvalues.get(1)));
+                        }
+                        if (sizee == 1) {
+                            nearby.setText("1. " + distancemodel.get(keyvalues.get(0)));
+                        }
+                    } else {
+                        nearby.setText("1. " + distancemodel.get(keyvalues.get(0)) + "\n\n2. " + distancemodel.get(keyvalues.get(1)) + "\n\n3. " + distancemodel.get(keyvalues.get(2)));
                     }
+                }else{
+                    nearby.setText("Places Not Added");
 
-                /* Check if current element is less than
-                then update third */
-                    else if (distance < thirdmin)
-                        thirdmin = distance;
-                        thirdm=currentm;
                 }
-                nearby.setText("1. "+ firstm+"\n2. "+secm+"\n3. "+ thirdm);
-                System.out.println("1. "+ firstm+"\n\n2. "+secm+"\n\n3. "+ thirdm);
+
             }
         });
 
@@ -370,16 +369,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 sensorsdb.Daolight().deleteitem(latestid-9);
             }
 
-            if(sensorEvent.values[0]<20){
+            if(sensorEvent.values[0]<10){
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                 chart_accleration.setBackgroundColor(Color.LTGRAY);
                 chart_proxi.setBackgroundColor(Color.LTGRAY);
+                Toast.makeText(MainActivity.this, "Dark Mode Activated", Toast.LENGTH_SHORT).show();
+
 
             }else{
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 chart_accleration.setBackgroundColor(Color.WHITE);
                 chart_proxi.setBackgroundColor(Color.WHITE);
+                Toast.makeText(MainActivity.this, "Dark Mode Deactivated", Toast.LENGTH_SHORT).show();
+
             }
+
 
 
 //            System.out.println(sensorsdb.Daolight().getList());
@@ -416,25 +420,64 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(latestid>9){
                 sensorsdb.Daoproxi().deleteitem(latestid-9);
             }
+            List<Model_Proximity> list = sensorsdb.Daoproxi().getList();
+            int size= list.size();
+            if(size>9){
+                System.out.println(list.get(9).getTime()-list.get(5).getTime());
+
+            if(list.get(9).getTime()-list.get(5).getTime()<5000){
+                if(activatedproxy==false && list.get(9).getTime()-lastwave>10000){
+                    switch_gyro.setChecked(false);
+                    switch_acc.setChecked(false);
+                    switch_temp.setChecked(false);
+                    switch_light.setChecked(false);
+                    switch_orien.setChecked(false);
+                    switch_gps.setChecked(false);
+
+                    activatedproxy=true;
+                    lastwave= System.currentTimeMillis();
+                    System.out.println("Sensors_stopped");
+                    Toast.makeText(MainActivity.this, "Wave Detected", Toast.LENGTH_SHORT).show();
+                }
+                if(activatedproxy==true&& list.get(9).getTime()-lastwave>10000){
+                    switch_gyro.setChecked(true);
+                    switch_acc.setChecked(true);
+                    switch_temp.setChecked(true);
+                    switch_light.setChecked(true);
+                    switch_orien.setChecked(true);
+                    switch_gps.setChecked(true);
+                    activatedproxy=false;
+                    lastwave= System.currentTimeMillis();
+                    System.out.println("Sensors_start");
+                    Toast.makeText(MainActivity.this, "Wave Detected", Toast.LENGTH_SHORT).show();
+
+
+                }
+            }
+
+
+            }
 
             creategraph("proxy");
-
         }
-        else if (sevent.getType() == Sensor.TYPE_ORIENTATION){
-            int count=0;
-            int latestid=sensorsdb.Daoorien().getlastid();
-            if(!sensorsdb.Daoorien().isempty()){
-                count=latestid;
+        else if (sevent.getType() == Sensor.TYPE_ORIENTATION) {
+            int count = 0;
+            int latestid = sensorsdb.Daoorien().getlastid();
+            if (!sensorsdb.Daoorien().isempty()) {
+                count = latestid;
                 count++;
             }
             long time = System.currentTimeMillis();
-            sensorsdb.Daoorien().insert(new Model_Orientation(count,time,sensorEvent.values[0],sensorEvent.values[1],sensorEvent.values[2]));
-            val_orien_x.setText("A: "+ Float.toString(sensorEvent.values[0]));
-            val_orien_y.setText("P: "+ Float.toString(sensorEvent.values[1]));
-            val_orien_z.setText("R: "+ Float.toString(sensorEvent.values[2]));
-            if(latestid>9){
-                sensorsdb.Daoorien().deleteitem(latestid-9);
+            sensorsdb.Daoorien().insert(new Model_Orientation(count, time, sensorEvent.values[0], sensorEvent.values[1], sensorEvent.values[2]));
+            val_orien_x.setText("A: " + Float.toString(sensorEvent.values[0]));
+            val_orien_y.setText("P: " + Float.toString(sensorEvent.values[1]));
+            val_orien_z.setText("R: " + Float.toString(sensorEvent.values[2]));
+            if (latestid > 9) {
+                sensorsdb.Daoorien().deleteitem(latestid - 9);
             }
+            double a = sensorEvent.values[0];
+            double p = sensorEvent.values[1];
+            double r = sensorEvent.values[2];
         }
         else if(sevent.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
             int count=0;
@@ -459,15 +502,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 count++;
             }
             long time = System.currentTimeMillis();
+
             sensorsdb.Daoacc().insert(new Model_Linear_Accelerometer(count,time,sensorEvent.values[0],sensorEvent.values[1],sensorEvent.values[2]));
-            val_acc_x.setText("X: "+ Float.toString(sensorEvent.values[0]));
-            val_acc_y.setText("Y: "+ Float.toString(sensorEvent.values[1]));
-            val_acc_z.setText("Z: "+ Float.toString(sensorEvent.values[2]));
-            status.setText(String.valueOf(sensorEvent.values[0]*sensorEvent.values[1]*sensorEvent.values[2]));
+            val_acc_x.setText("X: "+ Float.valueOf(sensorEvent.values[0]));
+            val_acc_y.setText("Y: "+ Float.valueOf(sensorEvent.values[1]));
+            val_acc_z.setText("Z: "+ Float.valueOf(sensorEvent.values[2]));
             if(latestid>9){
                 sensorsdb.Daoacc().deleteitem(latestid-9);
             }
+            double x=sensorEvent.values[0];
+            double y= sensorEvent.values[1];
+            double z=sensorEvent.values[2];
+            double isstat=Math.sqrt(Math.pow(x,2)+Math.pow(y,2)+Math.pow(z,2));
+            if(isstat>0.2){
+                status.setText("Moving");
+                status.setTextColor(Color.RED);
+            }
+            else{
+                status.setText("Stationary");
+                status.setTextColor(Color.GREEN);
+
+            }
             creategraph("acc");
+
 
         }
     }
@@ -488,11 +545,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             LineData linedata = new LineData(dataset);
             Description desc = new Description();
             desc.setText("");
-            chart_proxi.setBackgroundColor(Color.WHITE);
-            chart_proxi.setDescription(desc);
-            chart_proxi.setData(linedata);
-            chart_proxi.notifyDataSetChanged();
-            chart_proxi.invalidate();
+//            chart_proxi.setBackgroundColor(Color.WHITE);
+            chart_proxi.post(new Runnable() {
+                @Override
+                public void run() {
+                    chart_proxi.setDescription(desc);
+                    chart_proxi.setData(linedata);
+                    chart_proxi.notifyDataSetChanged();
+                    chart_proxi.invalidate();
+                }
+            });
+
         }
         else{
             int cc=1;
@@ -510,11 +573,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             LineData linedata = new LineData(dataset);
             Description desc = new Description();
             desc.setText("");
-            chart_accleration.setBackgroundColor(Color.WHITE);
-            chart_accleration.setDescription(desc);
-            chart_accleration.setData(linedata);
-            chart_accleration.notifyDataSetChanged();
-            chart_accleration.invalidate();
+//            chart_accleration.setBackgroundColor(Color.WHITE);
+            chart_accleration.post(new Runnable() {
+                @Override
+                public void run() {
+                    chart_accleration.setDescription(desc);
+                    chart_accleration.setData(linedata);
+                    chart_accleration.notifyDataSetChanged();
+                    chart_accleration.invalidate();
+                }
+            });
+
         }
     }
 
@@ -535,34 +604,61 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("gyro",switch_gyro.isChecked());
-        outState.putBoolean("acc",switch_acc.isChecked());
-        outState.putBoolean("temp",switch_temp.isChecked());
-        outState.putBoolean("light",switch_light.isChecked());
-        outState.putBoolean("proxi",switch_proxi.isChecked());
-        outState.putBoolean("orien",switch_orien.isChecked());
-        outState.putBoolean("gps",switch_gps.isChecked());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                outState.putInt("scroll_x",scroller.getScrollX());
+                outState.putInt("scroll_y",scroller.getScrollY());
+                outState.putBoolean("gyro",switch_gyro.isChecked());
+                outState.putBoolean("acc",switch_acc.isChecked());
+                outState.putBoolean("temp",switch_temp.isChecked());
+                outState.putBoolean("light",switch_light.isChecked());
+                outState.putBoolean("proxi",switch_proxi.isChecked());
+                outState.putBoolean("orien",switch_orien.isChecked());
+                outState.putBoolean("gps",switch_gps.isChecked());
+                outState.putBoolean("actiproxy",activatedproxy);
+                outState.putBoolean("actiorien",activatedorien);
+                outState.putString("name",val_gps_name.getText().toString());
+                outState.putString("address",val_gps_address.getText().toString());
+                outState.putString("nearby",nearby.getText().toString());
 
-        switch_gyro.setChecked(false);
-        switch_acc.setChecked(false);
-        switch_temp.setChecked(false);
-        switch_light.setChecked(false);
-        switch_proxi.setChecked(false);
-        switch_orien.setChecked(false);
-        switch_gps.setChecked(false);
+                switch_gyro.setChecked(false);
+                switch_acc.setChecked(false);
+                switch_temp.setChecked(false);
+                switch_light.setChecked(false);
+                switch_proxi.setChecked(false);
+                switch_orien.setChecked(false);
+                switch_gps.setChecked(false);
+            }
+        });
+
 
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        switch_gyro.setChecked(savedInstanceState.getBoolean("gyro"));
-        switch_acc.setChecked(savedInstanceState.getBoolean("acc"));
-        switch_temp.setChecked(savedInstanceState.getBoolean("temp"));
-        switch_light.setChecked(savedInstanceState.getBoolean("light"));
-        switch_proxi.setChecked(savedInstanceState.getBoolean("proxi"));
-        switch_orien.setChecked(savedInstanceState.getBoolean("orien"));
-        switch_gps.setChecked(savedInstanceState.getBoolean("gps"));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                switch_gyro.setChecked(savedInstanceState.getBoolean("gyro"));
+                switch_acc.setChecked(savedInstanceState.getBoolean("acc"));
+                switch_temp.setChecked(savedInstanceState.getBoolean("temp"));
+                switch_light.setChecked(savedInstanceState.getBoolean("light"));
+                switch_proxi.setChecked(savedInstanceState.getBoolean("proxi"));
+                switch_orien.setChecked(savedInstanceState.getBoolean("orien"));
+                switch_gps.setChecked(savedInstanceState.getBoolean("gps"));
+                activatedproxy= savedInstanceState.getBoolean("actiproxy");
+                activatedorien= savedInstanceState.getBoolean("actiorien");
+                val_gps_name.setText(savedInstanceState.getString("name"));
+                val_gps_address.setText(savedInstanceState.getString("address"));
+                nearby.setText(savedInstanceState.getString("nearby"));
+                int x=savedInstanceState.getInt("scroll_x");
+                int y=savedInstanceState.getInt("scroll_y");
+                scroller.scrollTo(x,y);
+
+            }
+        });
 
     }
 

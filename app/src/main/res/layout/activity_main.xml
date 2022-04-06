@@ -7,10 +7,10 @@
     tools:context=".MainActivity">
 
     <ScrollView
+        android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/material_motion_easing_decelerated"
-        >
+        android:contentDescription="@string/material_motion_easing_decelerated">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,16 +26,15 @@
                     android:id="@+id/name_gyroscope"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Gyroscope"
                     android:layout_marginLeft="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="10dp"
+                    android:text="Gyroscope"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/switch_gyroscope"
@@ -52,41 +51,40 @@
                     android:id="@+id/value_gyroscope_x"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="X: 0.0"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias=".05"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name_gyroscope"
-                    android:hint="X: 0.0"
-                    app:layout_constraintHorizontal_bias=".05"
-                    android:padding="5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/name_gyroscope" />
 
                 <TextView
                     android:id="@+id/value_gyroscope_y"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Y: 0.0"
+                    android:padding="5dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/value_gyroscope_z"
                     app:layout_constraintHorizontal_bias=".5"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/value_gyroscope_x"
-                    app:layout_constraintTop_toBottomOf="@+id/name_gyroscope"
 
-                    android:padding="5dp"
-                    android:hint="Y: 0.0"
-                    />
+                    app:layout_constraintStart_toEndOf="@+id/value_gyroscope_x"
+                    app:layout_constraintTop_toBottomOf="@+id/name_gyroscope" />
 
                 <TextView
                     android:id="@+id/value_gyroscope_z"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name_gyroscope"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:padding="5dp"
                     android:hint="Z: 0.0"
-                    app:layout_constraintHorizontal_bias=".95"/>
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias=".95"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/name_gyroscope" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,17 +96,16 @@
                     android:id="@+id/name_accelerometer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Accelerometer"
-                    app:layout_constraintVertical_bias="0.05"
                     android:layout_marginLeft="10dp"
+                    android:padding="10dp"
+                    android:text="Accelerometer"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintVertical_bias="0.05" />
 
                 <Switch
                     android:id="@+id/switch_accelerometer"
@@ -116,11 +113,11 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias=".95"
-                    app:layout_constraintVertical_bias="0.05"
-
                     app:layout_constraintLeft_toLeftOf="parent"
+
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.05"
                     tools:ignore="TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
 
                 <TextView
@@ -128,29 +125,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="X: 0.0"
-                    app:layout_constraintVertical_bias="0.05"
-
                     android:padding="5dp"
+
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias=".05"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name_accelerometer" />
+                    app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
+                    app:layout_constraintVertical_bias="0.05" />
 
                 <TextView
                     android:id="@+id/status_accelerometer_movement"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
-                    app:layout_constraintVertical_bias="0.05"
+                    app:layout_constraintBottom_toBottomOf="parent"
 
                     app:layout_constraintEnd_toStartOf="@+id/switch_accelerometer"
-                    app:layout_constraintStart_toEndOf="@id/name_accelerometer"
+                    app:layout_constraintHorizontal_bias=".5"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/name_accelerometer"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias=".5"
+                    app:layout_constraintVertical_bias="0.05"
 
                     />
 
@@ -160,30 +157,29 @@
                     android:layout_height="wrap_content"
                     android:hint="Y: 0.0"
                     android:padding="5dp"
-                    app:layout_constraintVertical_bias="0.05"
-
                     app:layout_constraintBottom_toBottomOf="parent"
+
                     app:layout_constraintEnd_toStartOf="@+id/value_accelerometer_z"
                     app:layout_constraintHorizontal_bias=".5"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/value_accelerometer_x"
                     app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
-                     />
+                    app:layout_constraintVertical_bias="0.05" />
 
                 <TextView
                     android:id="@+id/value_accelerometer_z"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintVertical_bias="0.05"
-
-                    app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    android:padding="5dp"
                     android:hint="Z: 0.0"
-                    app:layout_constraintHorizontal_bias=".95"/>
+                    android:padding="5dp"
+
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias=".95"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
+                    app:layout_constraintVertical_bias="0.05" />
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_accelerometer"
@@ -191,13 +187,12 @@
                     android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_marginTop="5dp"
-                    app:layout_constraintWidth_percent=".95"
+                    android:padding="2dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/value_accelerometer_x"
-                    android:padding="2dp"
-                    />
+                    app:layout_constraintWidth_percent=".95" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -210,16 +205,15 @@
                     android:id="@+id/name_temperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Temperature"
                     android:layout_marginLeft="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="10dp"
+                    android:text="Temperature"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/switch_temperature"
@@ -236,13 +230,13 @@
                     android:id="@+id/value_temperature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Temp: 0.0"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias=".05"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name_temperature"
-                    android:hint="Temp: 0.0"
-                    app:layout_constraintHorizontal_bias=".05"
-                    android:padding="5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/name_temperature" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -255,16 +249,15 @@
                     android:id="@+id/name_light"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Light"
                     android:layout_marginLeft="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="10dp"
+                    android:text="Light"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/switch_light"
@@ -282,13 +275,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/switch_light"
-                    app:layout_constraintStart_toEndOf="@id/name_light"
+                    app:layout_constraintHorizontal_bias=".5"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/name_light"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias=".5"
 
                     />
 
@@ -296,13 +289,13 @@
                     android:id="@+id/value_light"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="Lux: 0.0"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias=".05"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name_light"
-                    android:hint="Lux: 0.0"
-                    app:layout_constraintHorizontal_bias=".05"
-                    android:padding="5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/name_light" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -314,60 +307,58 @@
 
                 <TextView
                     android:id="@+id/name_proximity"
-                    app:layout_constraintVertical_bias="0.05"
-
                     android:layout_width="wrap_content"
+
                     android:layout_height="wrap_content"
-                    android:text="Proximity"
                     android:layout_marginLeft="10dp"
+                    android:padding="10dp"
+                    android:text="Proximity"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintHorizontal_bias="0"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintVertical_bias="0.05" />
 
                 <Switch
                     android:id="@+id/switch_proximity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintVertical_bias="0.05"
-
                     app:layout_constraintBottom_toBottomOf="parent"
+
                     app:layout_constraintHorizontal_bias=".95"
                     app:layout_constraintLeft_toRightOf="@+id/name_proximity"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.05"
                     tools:ignore="TouchTargetSizeCheck" />
 
                 <TextView
                     android:id="@+id/value_proximity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintVertical_bias="0.05"
+                    android:hint="Distance: 0.0"
 
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias=".05"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/name_proximity"
-                    android:hint="Distance: 0.0"
-                    app:layout_constraintHorizontal_bias=".05"
-                    android:padding="5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintVertical_bias="0.05" />
 
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/chart_proximity"
                     android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_marginTop="5dp"
-                    app:layout_constraintWidth_percent=".95"
+                    android:padding="2dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/value_proximity"
-                    android:padding="2dp"
-                    />
+                    app:layout_constraintWidth_percent=".95" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -381,16 +372,15 @@
                     android:id="@+id/name_orientation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Orientation"
                     android:layout_marginLeft="10dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:padding="10dp"
+                    android:text="Orientation"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0"
-                    android:padding="10dp"
-                    android:textStyle="bold"
-                    />
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <Switch
                     android:id="@+id/switch_orientation"
@@ -407,13 +397,13 @@
                     android:id="@+id/value_orientation_x"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="A: 0.0"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias=".05"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name_orientation"
-                    android:hint="A: 0.0"
-                    app:layout_constraintHorizontal_bias=".05"
-                    android:padding="5dp"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/name_orientation" />
 
                 <TextView
                     android:id="@+id/value_orientation_y"
@@ -433,13 +423,13 @@
                     android:id="@+id/value_orientation_z"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="R: 0.0"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_bias=".95"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/name_orientation"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:padding="5dp"
-                    android:hint="R: 0.0"
-                    app:layout_constraintHorizontal_bias=".95"/>
+                    app:layout_constraintTop_toBottomOf="@+id/name_orientation" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -556,12 +546,12 @@
                     android:id="@+id/nearbyplaces"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintVertical_bias="0.05"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintTop_toBottomOf="@id/findmyplace"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@id/findmyplace"
+                    app:layout_constraintVertical_bias="0.05" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
