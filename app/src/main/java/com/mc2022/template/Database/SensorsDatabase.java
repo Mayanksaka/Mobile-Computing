@@ -5,18 +5,18 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
-
 import com.mc2022.template.Models.Model_GPS;
+import com.mc2022.template.Models.Model_LinearAcceleration;
+import com.mc2022.template.Models.Model_MagneticField;
+import com.mc2022.template.Models.Model_wardrive;
 
-@Database(entities = {Model_Temperature.class, Model_Proximity.class, Model_Light.class, Model_Orientation.class, Model_Gyroscope.class, Model_GPS.class, Model_Linear_Accelerometer.class},version=2)
+@Database(entities = { Model_MagneticField.class, Model_GPS.class, Model_LinearAcceleration.class, Model_wardrive.class},version=1)
 public abstract class SensorsDatabase extends RoomDatabase {
-    public abstract DaoLinearAcceleration Daoacc();
-    public abstract DaoProximity Daoproxi();
-    public abstract DaoTempera Daotemp();
+    public abstract Dao_LinearAcceleration Daoacc();
     public abstract Dao_GPS Daogps();
-    public abstract DaoGyroscope Daogyro();
-    public abstract DaoOrientation Daoorien();
-    public abstract DaoLight Daolight();
+    public abstract Dao_Magnetic Daomagnetic();
+    public abstract Dao_wardrive Daowardrive();
+
 
     private static SensorsDatabase instance;
     public static synchronized  SensorsDatabase getInstance(Context context){

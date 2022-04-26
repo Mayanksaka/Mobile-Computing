@@ -6,4 +6,265 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint_accelerometer"
+        app:layout_constraintVertical_bias="0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:textAlignment="viewStart"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Gender: "
+                android:textStyle="bold" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Male" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="Female" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/label_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Height (cm):"
+            android:textStyle="bold"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintVertical_bias="0"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/radiogroup"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+        <EditText
+            android:id="@+id/value_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="eg: 175 cm"
+            app:layout_constraintVertical_bias="0"
+
+            app:layout_constraintHorizontal_bias="1"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/radiogroup"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            android:id="@+id/name_accelerometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            android:text="Start Service"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_height"
+            app:layout_constraintVertical_bias="0.05" />
+
+        <Switch
+            android:id="@+id/switch_accelerometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias=".95"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_height"
+            app:layout_constraintVertical_bias="0.05"
+            tools:ignore="TouchTargetSizeCheck,UseSwitchCompatOrMaterialXml" />
+
+        <TextView
+            android:id="@+id/stepcount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Step Count: 0"
+            android:padding="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias=".05"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
+            app:layout_constraintVertical_bias="0.05" />
+
+        <TextView
+            android:id="@+id/distance_travel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Distance Travel: 0"
+            android:padding="5dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias=".95"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
+            app:layout_constraintVertical_bias="0.05" />
+        <TextView
+            android:id="@+id/direction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Orientation: 0"
+            android:padding="5dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias=".45"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_accelerometer"
+            app:layout_constraintVertical_bias="0.05" />
+
+
+        <FrameLayout
+            android:id="@+id/framelayout"
+            android:layout_width="match_parent"
+            android:layout_height="300sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintTop_toBottomOf="@+id/stepcount">
+            <fragment
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </fragment>
+<!--                tools:context="com.example.currentplacedetailsonmap.MapsActivityCurrentPlace"-->
+<!--            />-->
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/lonlagname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Enter Location"
+            app:layout_constraintVertical_bias="0"
+
+            app:layout_constraintHorizontal_bias="0"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/framelayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <Button
+            android:id="@+id/savelocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintHorizontal_bias="1"
+            android:text="Save Location"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/framelayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+
+        <Button
+            android:id="@+id/getlocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintVertical_bias="0"
+            app:layout_constraintHorizontal_bias="1"
+            android:text="Get My Location"
+            android:layout_marginLeft="10dp"
+            android:padding="10dp"
+            app:layout_constraintTop_toBottomOf="@id/savelocation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+            <TextView
+                android:id="@+id/label_mylocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintVertical_bias="0"
+                app:layout_constraintHorizontal_bias="0"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:padding="10dp"
+                app:layout_constraintTop_toBottomOf="@id/savelocation"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+<!--        <TextView-->
+<!--            android:id="@+id/lati"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/framelayout"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/logi"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/lati"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/nlati"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/logi"/>-->
+<!--        <TextView-->
+<!--            android:id="@+id/nlogi"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintVertical_bias="0"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/nlati"/>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

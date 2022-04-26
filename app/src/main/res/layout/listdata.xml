@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <TextView
+        android:id="@+id/serial_number"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.10"
+        android:layout_height="wrap_content"
+        android:text="S.no"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:background="@drawable/textview_bouders"
+        android:padding="2dp"/>
+
+    <TextView
+        android:id="@+id/room_name"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.275"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/serial_number"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:background="@drawable/textview_bouders"
+        android:padding="2dp"/>
+
+    <TextView
+        android:id="@+id/room_number"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.125"
+        android:layout_height="wrap_content"
+        android:text="Room"
+        android:gravity="center"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/room_name"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:background="@drawable/textview_bouders"
+        android:padding="2dp"/>
+
+    <TextView
+        android:id="@+id/wifi_1"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.125"
+        android:layout_height="wrap_content"
+        android:text="RSSI_1"
+        android:gravity="center"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/room_number"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:background="@drawable/textview_bouders"
+        android:padding="2dp"/>
+
+    <TextView
+        android:id="@+id/wifi_2"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.125"
+        android:layout_height="wrap_content"
+        android:text="RSSI_2"
+        android:gravity="center"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wifi_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:background="@drawable/textview_bouders"
+        android:padding="2dp"/>
+
+    <TextView
+        android:id="@+id/wifi_3"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.125"
+        android:layout_height="wrap_content"
+        android:text="RSSI_3"
+        android:gravity="center"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wifi_2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:background="@drawable/textview_bouders"
+        android:padding="2dp"/>
+
+    <TextView
+        android:id="@+id/wifi_4"
+        android:layout_width="0dp"
+        app:layout_constraintWidth_percent="0.125"
+        android:layout_height="wrap_content"
+        android:text="RSSI_4"
+        android:gravity="center"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/wifi_3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHorizontal_bias="0"
+        android:background="@drawable/textview_bouders"
+        android:padding="2dp"/>
+
+<!--    <TextView-->
+<!--        android:id="@+id/room_number"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textStyle="bold"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+</androidx.constraintlayout.widget.ConstraintLayout>
