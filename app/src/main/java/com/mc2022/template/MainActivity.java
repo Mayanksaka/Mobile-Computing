@@ -33,7 +33,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mc2022.template.Database.SensorsDatabase;
@@ -58,9 +57,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private Double stride_val=1.0;
     private double old_value=0;
     private int step=0;
-    private final LatLng defaultLocation = new LatLng(28.54829223068449, 77.27431552071639);
+    private final LatLng startinglocation = new LatLng(28.5482922306844899, 77.2743155207163899);
     private static final int DEFAULT_ZOOM = 120;
-    private LatLng prevLocation = defaultLocation;
+    private LatLng oldLocation = startinglocation;
     private Button setlocation, getlocation,wardrive;
 
 
@@ -71,8 +70,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private final float[] rotationMatrix = new float[9];
     private final float[] orientationAngles = new float[3];
 
-    boolean islastacceleromercopied=false;
-    boolean islastmagnetometercopied= false;
+    boolean islastacc_copied =false;
+    boolean islastmagn_copied = false;
 
     long lastupdatedtime=0;
     float currentdegree=0f;
@@ -167,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 int smallindex=0;
                 double smallestdistance= 9999;
                 for(int i=0;i <data.size(); i++){
-                    double difference= Math.sqrt(Math.pow(prevLocation.longitude-data.get(i).getLongitude(),2)+Math.pow(prevLocation.latitude-data.get(i).getLatitude(),2));
+                    double difference= Math.sqrt(Math.pow(oldLocation.longitude-data.get(i).getLongitude(),2)+Math.pow(oldLocation.latitude-data.get(i).getLatitude(),2));
                     if(difference<smallestdistance){
                         smallestdistance=difference;
                         smallindex=i;
@@ -192,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     count++;
                 }
                 long time = System.currentTimeMillis();
-                sensorsdb.Daogps().insert(new Model_GPS(count,time,prevLocation.longitude,prevLocation.latitude,userlocation.getText().toString(),""));
+                sensorsdb.Daogps().insert(new Model_GPS(count,time, oldLocation.longitude, oldLocation.latitude,userlocation.getText().toString(),""));
                 Toast.makeText(MainActivity.this, "Location Saved", Toast.LENGTH_SHORT).show();
 
             }
@@ -215,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Sensor sevent = sensorEvent.sensor;
         if (sevent.getType() == Sensor.TYPE_ACCELEROMETER){
             System.arraycopy(sensorEvent.values, 0, accelerometerReading, 0, sensorEvent.values.length);
-            islastacceleromercopied=true;
+            islastacc_copied =true;
 //            int count=0;
 //            int latestid=sensorsdb.Daoacc().getlastid();
 //            if(!sensorsdb.Daoacc().isempty()){
@@ -247,17 +246,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 double R = (double) 6378.1;
                 double d = stride_length/100000;
                 double current_direction= (float) Math.toRadians(currentdegree);
-                double oldlati= (double) Math.toRadians(prevLocation.latitude);
-                double oldlong= (double) Math.toRadians(prevLocation.longitude);
+                double oldlati= (double) Math.toRadians(oldLocation.latitude);
+                double oldlong= (double) Math.toRadians(oldLocation.longitude);
                 double newlati= (double) (Math.asin(Math.sin(oldlati)*Math.cos(d/R)+Math.cos(oldlati)*Math.sin(d/R)*Math.cos(current_direction)));
                 double newlong= (double)  (oldlong+Math.atan2(Math.sin(current_direction)*Math.sin(d/R)*Math.cos(oldlati), Math.cos(d/R)-Math.sin(oldlati)*Math.sin(newlati)));
                 LatLng newlocation = new LatLng(Math.toDegrees(newlati),Math.toDegrees(newlong));
 
                 Polyline line = map.addPolyline(new PolylineOptions()
-                        .add(prevLocation, newlocation)
+                        .add(oldLocation, newlocation)
                         .width(5)
                         .color(Color.BLUE));
-                prevLocation=newlocation;
+                oldLocation =newlocation;
                 Log.i(TAG, "step: "+step);
                 stepcount.setText("Step Count: "+ Integer.valueOf(step));
                 distanctravel.setText("Distance: "+distance);
@@ -269,22 +268,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
 
             System.arraycopy(sensorEvent.values, 0, magnetometerReading,0, sensorEvent.values.length);
-            islastmagnetometercopied=true;
+            islastmagn_copied =true;
 
     }
-        if(islastacceleromercopied && islastmagnetometercopied && System.currentTimeMillis()-lastupdatedtime>250){
+        if(islastacc_copied && islastmagn_copied && System.currentTimeMillis()-lastupdatedtime>250){
             SensorManager.getRotationMatrix(rotationMatrix, null,
                     accelerometerReading, magnetometerReading);
-
-            // "rotationMatrix" now has up-to-date information.
-
             SensorManager.getOrientation(rotationMatrix, orientationAngles);
 
             float azimuthInradian= orientationAngles[0];
             float azimuthIndegree= (float) Math.toDegrees(azimuthInradian);
             currentdegree= azimuthIndegree;
             lastupdatedtime=System.currentTimeMillis();
-
             int x = (int) -azimuthIndegree;
             orient.setText("Direction: "+x+"°");
 
@@ -295,17 +290,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onAccuracyChanged(Sensor sensor, int i) {
 
 
-    }
-    public void updateOrientationAngles() {
-        // Update rotation matrix, which is needed to update orientation angles.
-        SensorManager.getRotationMatrix(rotationMatrix, null,
-                accelerometerReading, magnetometerReading);
-
-        // "rotationMatrix" now has up-to-date information.
-
-        SensorManager.getOrientation(rotationMatrix, orientationAngles);
-
-        // "orientationAngles" now has up-to-date information.
     }
 
     @Override
@@ -322,36 +306,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onMapReady(@NonNull GoogleMap googleMap) {
         this.map = googleMap;
 
-        // [START_EXCLUDE]
-        // [START map_current_place_set_info_window_adapter]
-        // Use a custom info window adapter to handle multiple lines of text in the
-        // info window contents.
-        this.map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
-            @Override
-            // Return null here, so that getInfoContents() is called next.
-            public View getInfoWindow(Marker arg0) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-
-
-                return null;
-            }
-        });
+//        this.map.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+//
+//            @Override
+//            // Return null here, so that getInfoContents() is called next.
+//            public View getInfoWindow(Marker arg0) {
+//                return null;
+//            }
+//
+//            @Override
+//            public View getInfoContents(Marker marker) {
+//
+//                return null;
+//            }
+//        });
         // [END map_current_place_set_info_window_adapter]
 
         // Prompt the user for permission.
         getLocationPermission();
-        // [END_EXCLUDE]
 
-        // Turn on the My Location layer and the related control on the map.
         map.moveCamera(CameraUpdateFactory
-                .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+                .newLatLngZoom(startinglocation, DEFAULT_ZOOM));
         map.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
 
 }
+
+//References
+//https://developer.android.com/reference/android/net/wifi/WifiInfo#getRssi()
+//https://developer.android.com/reference/android/net/wifi/ScanResult
+//        https://developer.android.com/guide/topics/connectivity/wifi-scan
+//        https://www.youtube.com/watch?v=o-qpVefrfVA&t=1202s
+//        https://developers.google.com/maps/documentation/android-sdk/current-place-tutorial
