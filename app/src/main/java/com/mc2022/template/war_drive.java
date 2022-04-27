@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.mc2022.template.Database.SensorsDatabase;
 import com.mc2022.template.Models.Model_wardrive;
+import com.mc2022.template.Models.Wifi_knn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,9 +44,10 @@ public class war_drive extends AppCompatActivity {
     private List<ScanResult> desired;
     private EditText locationname, locationroomnumber;
     private Map<String,Integer> routers = new HashMap<>();
-    private Button addplace, mylocation, deletedatabase;
+    private Button addplace, mylocation, deletedatabase,exit;
     private SensorsDatabase sensorsdb;
     private List<Model_wardrive> data;
+
 
 
     @Override
@@ -54,7 +56,7 @@ public class war_drive extends AppCompatActivity {
 
         setContentView(R.layout.activity_war_drive);
         sensorsdb= SensorsDatabase.getInstance(getApplicationContext());
-
+        exit= findViewById(R.id.exit);
         recyclerview = findViewById(R.id.recyclerview);
         addplace= findViewById(R.id.button_add_place);
         mylocation=findViewById(R.id.button_find_my_location);
@@ -169,33 +171,22 @@ public class war_drive extends AppCompatActivity {
                     }
                     ArrayList<Integer> arr= new ArrayList<>();
                     for(int i: routers.values()){
-                        arr.add(i);
-                    }
-                    int smallindex=0;
-                    double smallestdistance= 9999;
-
-                    for(int i=0;i <data.size(); i++){
-                        double difference= Math.sqrt(Math.pow(arr.get(0)-data.get(i).getSsid_1(),2)+Math.pow(arr.get(1)-data.get(i).getSsid_2(),2)+Math.pow(arr.get(2)-data.get(i).getSsid_3(),2)+Math.pow(arr.get(3)-data.get(i).getSsid_4(),2));
-                        if(difference<smallestdistance){
-                            smallestdistance=difference;
-                            smallindex=i;
-                        }
-                    }
-                    Toast.makeText(getApplicationContext(),"You are in room: "+ data.get(smallindex).getRoom_number(),Toast.LENGTH_SHORT).show();
-
+                        arr.add(i);}
+                    String ans=Wifi_knn.getresult(arr,data);
+                    Toast.makeText(getApplicationContext(),"You are in room: "+ ans,Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
     }
-//    public void scanwifi(){
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        });
-//    }
+
 private List<ScanResult> scanSuccess() {
     List<ScanResult> results = wifimanager.getScanResults();
     return results;

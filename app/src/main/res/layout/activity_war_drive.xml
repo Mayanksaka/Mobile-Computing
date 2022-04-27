@@ -117,6 +117,18 @@
                     app:layout_constraintVertical_bias="0"
                     app:layout_constraintWidth_percent="0.8"
                     android:layout_marginBottom="20dp" />
+                <Button
+                    android:id="@+id/exit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/button_delete_database"
+                    app:layout_constraintVertical_bias="0"
+                    app:layout_constraintWidth_percent="0.8"
+                    android:layout_marginBottom="20dp" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

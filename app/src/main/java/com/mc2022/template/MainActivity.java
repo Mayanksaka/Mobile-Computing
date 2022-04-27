@@ -6,6 +6,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -36,6 +37,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mc2022.template.Database.SensorsDatabase;
+import com.mc2022.template.Models.Model_GPS;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener , OnMapReadyCallback {
     private GoogleMap map;
@@ -48,10 +52,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private RadioGroup radiogroup;
     private RadioButton selectedbutton;
     private EditText height, userlocation;
-    private TextView val_mag_x,val_mag_y,val_mag_z,ll,gg,nll,ngg;
     private Switch switch_acc, switch_mag;
     private Sensor sensor_accelerometer, sensor_magnetic_field;
-    private RadioButton button;
     private RadioGroup query;
     private Double stride_val=1.0;
     private double old_value=0;
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private final LatLng defaultLocation = new LatLng(28.54829223068449, 77.27431552071639);
     private static final int DEFAULT_ZOOM = 120;
     private LatLng prevLocation = defaultLocation;
-    private Button setlocation, getlocation;
+    private Button setlocation, getlocation,wardrive;
 
 
 
@@ -93,24 +95,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        Places.initialize(getApplicationContext(), getString(R.string.maps_api_key));
-//        placesClient = Places.createClient(this);
-//
-//        // Construct a FusedLocationProviderClient.
-//        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-//        ll=findViewById(R.id.lati);
-//        gg= findViewById(R.id.logi);
-//        nll=findViewById(R.id.nlati);
-//        ngg= findViewById(R.id.nlogi);
+
         fetchedlocation=findViewById(R.id.label_mylocation);
         userlocation= findViewById(R.id.lonlagname);
         getlocation = findViewById(R.id.getlocation);
         setlocation= findViewById(R.id.savelocation);
-
+        wardrive=findViewById(R.id.button_wardrive);
         query=findViewById(R.id.radiogroup);
         height= findViewById(R.id.value_height);
         stepcount= findViewById(R.id.stepcount);
@@ -118,9 +112,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         switch_acc = findViewById(R.id.switch_accelerometer);
         orient= findViewById(R.id.direction);
 
-//        scroller= findViewById(R.id.scrollview);
         smanager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         sensorsdb= SensorsDatabase.getInstance(getApplicationContext());
+        getlocation.setClickable(false);
+        setlocation.setClickable(false);
         switch_acc.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
@@ -150,11 +145,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         Toast.makeText(MainActivity.this, "Accelerometer Not supported", Toast.LENGTH_SHORT).show();
                         Log.i(TAG,"Accelerometer Not supported");
                     }
+                    getlocation.setClickable(true);
+                    setlocation.setClickable(true);
                 } else {
                     smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER));
                     smanager.unregisterListener(MainActivity.this, smanager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD));
-
-//                    Toast.makeText(MainActivity.this, "Accelerometer stopped", Toast.LENGTH_SHORT).show();
+                    getlocation.setClickable(false);
+                    setlocation.setClickable(false);
                 }
             }
         });
@@ -163,6 +160,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View view) {
 
+                List<Model_GPS> data=sensorsdb.Daogps().isempty()? null: sensorsdb.Daogps().getList();
+                if(data==null){
+                    Toast.makeText(getApplicationContext(),"No data in database",Toast.LENGTH_SHORT).show();
+                    return;}
+                int smallindex=0;
+                double smallestdistance= 9999;
+                for(int i=0;i <data.size(); i++){
+                    double difference= Math.sqrt(Math.pow(prevLocation.longitude-data.get(i).getLongitude(),2)+Math.pow(prevLocation.latitude-data.get(i).getLatitude(),2));
+                    if(difference<smallestdistance){
+                        smallestdistance=difference;
+                        smallindex=i;
+                    }
+                }
+                Toast.makeText(getApplicationContext(),"You are near: "+ data.get(smallindex).getName(),Toast.LENGTH_SHORT).show();
+                fetchedlocation.setText(data.get(smallindex).getName());
             }
         });
 
@@ -170,10 +182,31 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View view) {
                 if(userlocation.getText().toString().trim()==null){
-
+                    Toast.makeText(MainActivity.this, "Please Enter Location", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+                int count=0;
+                int latestid=sensorsdb.Daoacc().getlastid();
+                if(!sensorsdb.Daoacc().isempty()){
+                    count=latestid;
+                    count++;
+                }
+                long time = System.currentTimeMillis();
+                sensorsdb.Daogps().insert(new Model_GPS(count,time,prevLocation.longitude,prevLocation.latitude,userlocation.getText().toString(),""));
+                Toast.makeText(MainActivity.this, "Location Saved", Toast.LENGTH_SHORT).show();
+
             }
         });
+
+        wardrive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(),war_drive.class);
+                startActivity(i);
+            }
+        });
+
+
 
             }
 
@@ -209,8 +242,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             old_value = value;
             int distance= Integer.valueOf((int) Math.round(step*stride_length));
             if(difference>4){
-                ll.setText(String.valueOf((double) prevLocation.latitude));
-                gg.setText(String.valueOf((double) prevLocation.longitude));
+
                 step++;
                 double R = (double) 6378.1;
                 double d = stride_length/100000;
@@ -220,8 +252,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 double newlati= (double) (Math.asin(Math.sin(oldlati)*Math.cos(d/R)+Math.cos(oldlati)*Math.sin(d/R)*Math.cos(current_direction)));
                 double newlong= (double)  (oldlong+Math.atan2(Math.sin(current_direction)*Math.sin(d/R)*Math.cos(oldlati), Math.cos(d/R)-Math.sin(oldlati)*Math.sin(newlati)));
                 LatLng newlocation = new LatLng(Math.toDegrees(newlati),Math.toDegrees(newlong));
-                nll.setText(String.valueOf((double) newlocation.latitude));
-                ngg.setText(String.valueOf((double) newlocation.longitude));
+
                 Polyline line = map.addPolyline(new PolylineOptions()
                         .add(prevLocation, newlocation)
                         .width(5)
@@ -229,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 prevLocation=newlocation;
                 Log.i(TAG, "step: "+step);
                 stepcount.setText("Step Count: "+ Integer.valueOf(step));
-                distanctravel.setText("Distance Travel: "+distance);
+                distanctravel.setText("Distance: "+distance);
                 }
 
 
@@ -254,8 +285,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             currentdegree= azimuthIndegree;
             lastupdatedtime=System.currentTimeMillis();
 
-            int x = (int) azimuthIndegree;
-            orient.setText("Orientation: "+x+"°");
+            int x = (int) -azimuthIndegree;
+            orient.setText("Direction: "+x+"°");
 
         }
     }
